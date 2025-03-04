@@ -24,8 +24,8 @@ $stmt = $pdo->query("SELECT r.id, r.user_id, r.routine_name, r.created_at, u.ori
 $routines = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Retrieve all logs
-$stmt = $pdo->query("SELECT l.id, l.user_id, l.routine_id, l.log_data, l.created_at, u.original_username 
-                     FROM logs l 
+$stmt = $pdo->query("SELECT l.id, l.user_id, l.routine_id, l.metric_values, l.created_at, u.original_username 
+                     FROM log_entries l 
                      JOIN users u ON l.user_id = u.id");
 $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
