@@ -2,6 +2,19 @@
 session_start();
 require_once 'includes/config.php';
 
+if ($user && password_verify($password, $user['password'])) {
+    $_SESSION['username'] = $username;
+    // Redirect admin to admin.php, everyone else to dashboard.php
+    if ($username === 'admin') {
+        header("Location: admin.php");
+    } else {
+        header("Location: dashboard.php");
+    }
+    exit;
+} else {
+    $error = "Invalid username or password.";
+}
+
 // If the user is already logged in, redirect them to the dashboard.
 if (isset($_SESSION['username'])) {
     header("Location: dashboard.php");
