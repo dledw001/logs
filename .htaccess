@@ -1,0 +1,7 @@
+# Ensure Apache looks for index.php first
+DirectoryIndex index.php index.html
+
+# Force PHP files to be handled by PHP
+<FilesMatch "\.php$">
+    SetHandler application/x-httpd-php
+</FilesMatch>
