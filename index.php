@@ -2,20 +2,18 @@
 session_start();
 require_once 'includes/config.php';
 
-if ($user && password_verify($password, $user['password'])) {
-    $_SESSION['username'] = $username;
-    // Redirect admin to admin.php, everyone else to dashboard.php
-    if ($username === 'admin') {
+// If the user is already logged in, redirect accordingly.
+if (isset($_SESSION['username'])) {
+    if ($_SESSION['username'] === 'admin') {
         header("Location: admin.php");
     } else {
         header("Location: dashboard.php");
     }
     exit;
-} else {
-    $error = "Invalid username or password.";
 }
 
 $error = "";
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get and normalize the username input.
     $usernameInput = trim($_POST["username"]);
@@ -38,7 +36,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // If a user was found and the password matches, log them in.
     if ($user && password_verify($password, $user['password'])) {
         $_SESSION['username'] = $username;
-        header("Location: dashboard.php");
+        // Redirect admin to admin.php, everyone else to dashboard.php
+        if ($username === 'admin') {
+            header("Location: admin.php");
+        } else {
+            header("Location: dashboard.php");
+        }
         exit;
     } else {
         $error = "Invalid username or password.";
