@@ -25,7 +25,6 @@ if (!$userRecord) {
 $userId = $userRecord['id'];
 $originalUsername = $userRecord['original_username'];
 
-// Handle new routine form submission.
 $message = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['routine_name'])) {
     $routineName = trim($_POST['routine_name']);
@@ -34,7 +33,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['routine_name'])) {
     } else {
         $stmt = $pdo->prepare("INSERT INTO routines (user_id, routine_name) VALUES (?, ?)");
         if ($stmt->execute([$userId, $routineName])) {
-            $message = "Routine created successfully!";
+            // Get the new routine ID and redirect immediately to routine_detail.php.
+            $newRoutineId = $pdo->lastInsertId();
+            header("Location: routine_detail.php?routine_id=" . $newRoutineId);
+            exit;
         } else {
             $message = "Error creating routine. Please try again.";
         }
@@ -79,7 +81,7 @@ $routines = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <li>
             <?php echo htmlspecialchars($routine['routine_name']); ?>
             <small>(Created on: <?php echo htmlspecialchars($routine['created_at']); ?>)</small>
-            <!-- Optionally, add a link to view or edit the routine -->
+            <!-- Optionally, you can keep a view link here -->
             <a href="routine_detail.php?routine_id=<?php echo $routine['id']; ?>">View</a>
           </li>
         <?php endforeach; ?>
