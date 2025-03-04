@@ -43,14 +43,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Logger App - Login</title>
+  <title>Logs - Login</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="assets/favicon.png" type="image/x-icon">
 </head>
 <body>
   <div class="container">
     <img src="assets/logs_color_256.png" alt="Site Logo" class="logo">
-    <h1>Logs - Login</h1>
+    <h1>Login</h1>
     <?php if ($error): ?>
       <p style="color:red;"><?php echo htmlspecialchars($error); ?></p>
     <?php endif; ?>
