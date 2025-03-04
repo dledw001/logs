@@ -159,7 +159,7 @@ $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <td><?php echo htmlspecialchars($log['id']); ?></td>
                 <td><?php echo htmlspecialchars($log['original_username']); ?></td>
                 <td><?php echo htmlspecialchars($log['routine_id']); ?></td>
-                <td><?php echo htmlspecialchars($log['log_data']); ?></td>
+                <td><?php echo htmlspecialchars($log['metric_values']); ?></td>
                 <td><?php echo htmlspecialchars($log['created_at']); ?></td>
                 <td class="actions">
                   <a href="admin_delete_log.php?log_id=<?php echo $log['id']; ?>" onclick="return confirm('Delete this log entry?');">Delete</a>
