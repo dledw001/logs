@@ -1,5 +1,6 @@
 <?php
 // Start the session
+header("Content-Type: text/html; charset=UTF-8");
 session_start();
 
 // If the user is already logged in, redirect to dashboard
