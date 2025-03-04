@@ -33,7 +33,7 @@ if (isset($_SESSION['username'])) {
 <body>
   <div class="container">
     <img src="assets/logs_color_256.png" alt="Site Logo" class="logo">
-    <h1>Login to Logs</h1>
+    <h1>Login</h1>
     <form action="login.php" method="post">
       <label for="username">Username:</label>
       <input type="text" id="username" name="username" required placeholder="Enter your username">
