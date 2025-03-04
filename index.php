@@ -1,6 +1,18 @@
 <?php
-// Start the session
+
 header("Content-Type: text/html; charset=UTF-8");
+
+// Set cookie parameters with SameSite attribute
+session_set_cookie_params([
+    'lifetime' => 0,           // Session cookie (expires when browser closes)
+    'path'     => '/',
+    'domain'   => '',          // Set to your domain if necessary
+    'secure'   => true,        // Must be true if SameSite is 'None'
+    'httponly' => true,
+    'samesite' => 'None'       // Can also be 'Lax' or 'Strict'
+]);
+
+// Start the session
 session_start();
 
 // If the user is already logged in, redirect to dashboard
