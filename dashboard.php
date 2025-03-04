@@ -81,8 +81,10 @@ $routines = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <li>
             <?php echo htmlspecialchars($routine['routine_name']); ?>
             <small>(Created on: <?php echo htmlspecialchars($routine['created_at']); ?>)</small>
-            <!-- Optionally, you can keep a view link here -->
+            <!-- View Details Link -->
             <a href="routine_detail.php?routine_id=<?php echo $routine['id']; ?>">View</a>
+            <!-- Log Entry Link -->
+            <a href="log_values.php?routine_id=<?php echo $routine['id']; ?>">Log Entry</a>
           </li>
         <?php endforeach; ?>
       </ul>
