@@ -15,12 +15,6 @@ if ($user && password_verify($password, $user['password'])) {
     $error = "Invalid username or password.";
 }
 
-// If the user is already logged in, redirect them to the dashboard.
-if (isset($_SESSION['username'])) {
-    header("Location: dashboard.php");
-    exit;
-}
-
 $error = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get and normalize the username input.
