@@ -1,0 +1,77 @@
+/* Global Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background: #121212; /* Dark background */
+  color: #e0e0e0;    /* Light text color */
+}
+
+/* Container styling for responsiveness */
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  background: #1e1e1e; /* Slightly lighter dark for containers */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Logo styling */
+.logo {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto 20px;
+}
+
+/* Heading */
+h1 {
+  text-align: center;
+  color: #ffffff;
+}
+
+/* Form styling */
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+input, button {
+  padding: 10px;
+  margin-bottom: 15px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+/* Input styling */
+input {
+  background: #333333;
+  color: #ffffff;
+  border: 1px solid #444444;
+}
+
+/* Button styling */
+button {
+  background-color: #6200ee;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #3700b3;
+}
+
+/* Link styling */
+a {
+  text-align: center;
+  display: block;
+  margin-top: 10px;
+  color: #bb86fc;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
