@@ -72,15 +72,15 @@ $routines = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <form action="dashboard.php" method="post">
       <label for="routine_name">Routine Name:</label>
       <input type="text" id="routine_name" name="routine_name" placeholder="Enter routine name" required>
-      <button type="submit" class="create-routine-button">Create Routine</button>
+      <button type="submit">Create Routine</button>
     </form>
     
     <h2>Your Routines</h2>
     <?php if (count($routines) > 0): ?>
       <?php foreach ($routines as $routine): ?>
-        <a class="routine-button" href="routine_detail.php?routine_id=<?php echo $routine['id']; ?>">
+        <button href="routine_detail.php?routine_id=<?php echo $routine['id']; ?>">
           <?php echo htmlspecialchars($routine['routine_name']); ?>
-        </a>
+      </button>
       <?php endforeach; ?>
     <?php else: ?>
       <p>You have not created any routines yet.</p>
