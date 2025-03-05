@@ -78,7 +78,7 @@ $routines = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <h2>Your Routines</h2>
     <?php if (count($routines) > 0): ?>
       <?php foreach ($routines as $routine): ?>
-        <a class="routine-button" href="routine_detail.php?routine_id=<?php echo $routine['id']; ?>">
+        <a class="create-routine-button" href="routine_detail.php?routine_id=<?php echo $routine['id']; ?>">
           <?php echo htmlspecialchars($routine['routine_name']); ?>
         </a>
       <?php endforeach; ?>
