@@ -80,7 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <form action="register.php" method="get">
       <button class="button-alt" type="submit">Create new account</button>
     </form>
-    <p>&copy 2025 Dan Ledwith</p>
+    <h2>&copy 2025 Dan Ledwith</h2>
   </div>
 </body>
 </html>
