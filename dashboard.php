@@ -57,7 +57,6 @@ $routines = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <!-- Optional: Your custom styles -->
-  <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="assets/favicon.png" type="image/x-icon">
 </head>
 <body class="bg-dark text-light">
