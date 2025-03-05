@@ -3,18 +3,18 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 20px;
-  background: #121212; /* Dark background */
-  color: #e0e0e0;    /* Light text color */
+  background: #f9f9f9;
+  color: #333;
 }
 
 /* Container styling for responsiveness */
 .container {
   max-width: 600px;
   margin: 0 auto;
-  background: #1e1e1e; /* Slightly lighter dark for containers */
+  background: #fff;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 /* Logo styling */
@@ -28,7 +28,6 @@ body {
 /* Heading */
 h1 {
   text-align: center;
-  color: #ffffff;
 }
 
 /* Form styling */
@@ -44,23 +43,15 @@ input, button {
   box-sizing: border-box;
 }
 
-/* Input styling */
-input {
-  background: #333333;
-  color: #ffffff;
-  border: 1px solid #444444;
-}
-
-/* Button styling */
 button {
-  background-color: #6200ee;
-  color: #ffffff;
+  background-color: #007BFF;
+  color: #fff;
   border: none;
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #3700b3;
+  background-color: #0056b3;
 }
 
 /* Link styling */
@@ -68,7 +59,7 @@ a {
   text-align: center;
   display: block;
   margin-top: 10px;
-  color: #bb86fc;
+  color: #007BFF;
   text-decoration: none;
 }
 
