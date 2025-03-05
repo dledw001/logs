@@ -63,7 +63,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
   <div class="container">
     <img src="assets/logs_color_205.png" alt="Site Logo" class="logo">
-    <h1>Logs</h1>
     <?php if ($error): ?>
       <p style="color:red;"><?php echo htmlspecialchars($error); ?></p>
     <?php endif; ?>
