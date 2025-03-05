@@ -44,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['routine_name'])) {
 }
 
 // Retrieve routines belonging to this user.
-$stmt = $pdo->prepare("SELECT id, routine_name, created_at FROM routines WHERE user_id = ? ORDER BY created_at DESC");
+$stmt = $pdo->prepare("SELECT id, routine_name FROM routines WHERE user_id = ? ORDER BY created_at DESC");
 $stmt->execute([$userId]);
 $routines = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -56,12 +56,34 @@ $routines = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <title>Dashboard - Logs</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="assets/favicon.png" type="image/x-icon">
+  <style>
+    /* Inline style for routine buttons; you can move this to style.css later */
+    .routine-button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 15px;
+      font-size: 18px;
+      text-align: center;
+      background-color: #6200ee;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .routine-button:hover {
+      background-color: #3700b3;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
     <h1>Dashboard</h1>
-    <p>Welcome, <?php echo htmlspecialchars($originalUsername); ?>! 
-      <a href="logout.php">Logout</a>
+    <p>
+      Welcome, <?php echo htmlspecialchars($originalUsername); ?>! 
+      <a href="logout.php">Logout</a> | 
+      <a href="settings.php">Settings</a>
     </p>
     
     <h2>Create New Routine</h2>
@@ -76,18 +98,11 @@ $routines = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     <h2>Your Routines</h2>
     <?php if (count($routines) > 0): ?>
-      <ul>
-        <?php foreach ($routines as $routine): ?>
-          <li>
-            <?php echo htmlspecialchars($routine['routine_name']); ?>
-            <small>(Created on: <?php echo htmlspecialchars($routine['created_at']); ?>)</small>
-            <!-- View Details Link -->
-            <a href="routine_detail.php?routine_id=<?php echo $routine['id']; ?>">View</a>
-            <!-- Log Entry Link -->
-            <a href="log_values.php?routine_id=<?php echo $routine['id']; ?>">Log Entry</a>
-          </li>
-        <?php endforeach; ?>
-      </ul>
+      <?php foreach ($routines as $routine): ?>
+        <a class="routine-button" href="routine_detail.php?routine_id=<?php echo $routine['id']; ?>">
+          <?php echo htmlspecialchars($routine['routine_name']); ?>
+        </a>
+      <?php endforeach; ?>
     <?php else: ?>
       <p>You have not created any routines yet.</p>
     <?php endif; ?>
