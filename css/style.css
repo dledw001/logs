@@ -35,6 +35,11 @@ h4 {
   font-weight: normal;
 }
 
+footer {
+  text-justify: auto;
+  font-size:smaller;
+}
+
 /* Form styling */
 form {
   display: flex;
