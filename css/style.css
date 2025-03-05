@@ -50,13 +50,6 @@ button {
   cursor: pointer;
 }
 
-button_alt {
-  background-color: #1eff00a2;
-  color: #fff;
-  border: none;
-  cursor: pointer;
-}
-
 button:hover {
   background-color: #0056b3;
 }

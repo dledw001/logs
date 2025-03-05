@@ -78,7 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </form>
 
     <form action="register.php" method="get">
-      <button_alt type="submit">Create new account</button_alt>
+      <button type="submit" style="background-color:darkgreen">Create new account</button>
     </form>
   </div>
 </body>
