@@ -80,8 +80,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <form action="register.php" method="get">
       <button class="button-alt" type="submit">Create new account</button>
     </form>
-    <h4>Dan Ledwith &copy 2025</h4>
-    <h4><a href="https://github.com/dledw001/logs" target="_blank" rel="noopener noreferrer">github repo</h4>
+    <footer>Dan Ledwith &copy 2025</footer>
+    <footer><a href="https://github.com/dledw001/logs" target="_blank" rel="noopener noreferrer">github repo</footer>
   </div>
 </body>
 </html>
