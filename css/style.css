@@ -59,6 +59,18 @@ button:hover {
   background-color: #0056b3;
 }
 
+.button-alt {
+  background-color: #28a745; /* Green background */
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.button-alt:hover {
+  background-color: #218838; /* Darker green on hover */
+}
+
 /* Routine Button Styles */
 a.routine-button {
   display: block;
