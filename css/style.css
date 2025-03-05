@@ -27,6 +27,7 @@ body {
 
 /* Heading */
 h1 {
+  font-family: sans-serif;
   text-align: center;
 }
 
@@ -34,6 +35,10 @@ h1 {
 form {
   display: flex;
   flex-direction: column;
+}
+
+label {
+  font-family: monospace;
 }
 
 input, button {
