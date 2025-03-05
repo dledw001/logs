@@ -67,12 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <p style="color:red;"><?php echo htmlspecialchars($error); ?></p>
     <?php endif; ?>
     <form action="index.php" method="post">
-      <label for="username">Username:</label>
-      <br>
       <input type="text" id="username" name="username" required placeholder="Enter your username">
-      <br>
-      <label for="password">Password:</label>
-      <br>
       <input type="password" id="password" name="password" required placeholder="Enter your password">
       <br>
       <button type="submit">Login</button>
