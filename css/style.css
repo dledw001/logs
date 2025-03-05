@@ -80,6 +80,14 @@ button.button-alt:hover {
   background-color: #218838; /* Darker green on hover */
 }
 
+.bar {
+  align-items: center;
+  border-bottom: 1px solid #dadde1;
+  display: flex;
+  margin: 20px 16px;
+  text-align: center;
+}
+
 /* Routine Button Styles */
 a.routine-button {
   display: block;
