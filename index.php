@@ -81,7 +81,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <button class="button-alt" type="submit">Create new account</button>
     </form>
     <footer>Dan Ledwith &copy 2025</footer>
-    <footer><a href="https://github.com/dledw001/logs" target="_blank" rel="noopener noreferrer">github repo</footer>
   </div>
 </body>
 </html>
