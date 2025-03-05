@@ -59,7 +59,7 @@ button:hover {
   background-color: #0056b3;
 }
 
-.button-alt {
+button.button-alt {
   background-color: #28a745; /* Green background */
   color: #fff;
   border: none;
@@ -67,7 +67,7 @@ button:hover {
   font-weight: bold;
 }
 
-.button-alt:hover {
+button.button-alt:hover {
   background-color: #218838; /* Darker green on hover */
 }
 
