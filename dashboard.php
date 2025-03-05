@@ -56,32 +56,11 @@ $routines = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <title>Dashboard - Logs</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="assets/favicon.png" type="image/x-icon">
-  <style>
-    /* Inline style for routine buttons; you can move this to style.css later */
-    .routine-button {
-      display: block;
-      width: 100%;
-      margin: 10px 0;
-      padding: 15px;
-      font-size: 18px;
-      text-align: center;
-      background-color: #6200ee;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      text-decoration: none;
-      cursor: pointer;
-    }
-    .routine-button:hover {
-      background-color: #3700b3;
-    }
-  </style>
 </head>
 <body>
   <div class="container">
     <h1>Dashboard</h1>
-    <p>
-      Welcome, <?php echo htmlspecialchars($originalUsername); ?>! 
+    <p>Welcome, <?php echo htmlspecialchars($originalUsername); ?>! 
       <a href="logout.php">Logout</a> | 
       <a href="settings.php">Settings</a>
     </p>
@@ -93,7 +72,7 @@ $routines = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <form action="dashboard.php" method="post">
       <label for="routine_name">Routine Name:</label>
       <input type="text" id="routine_name" name="routine_name" placeholder="Enter routine name" required>
-      <button type="submit">Create Routine</button>
+      <button type="submit" class="create-routine-button">Create Routine</button>
     </form>
     
     <h2>Your Routines</h2>

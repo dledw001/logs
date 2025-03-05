@@ -54,6 +54,45 @@ button:hover {
   background-color: #0056b3;
 }
 
+/* Button Styling for Routine Actions */
+.routine-button {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 15px;
+  font-size: 18px;
+  text-align: center;
+  background-color: #6200ee;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.routine-button:hover {
+  background-color: #3700b3;
+}
+
+/* Create Routine Button - using same styling */
+.create-routine-button {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 15px;
+  font-size: 18px;
+  text-align: center;
+  background-color: #6200ee;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.create-routine-button:hover {
+  background-color: #3700b3;
+}
+
 /* Link styling */
 a {
   text-align: center;
