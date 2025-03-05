@@ -82,5 +82,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </form>
     <h4>&copy 2025 Dan Ledwith</h4>
   </div>
+  <footer>
+    <p>Dan Ledwith (C) 2025</p>
+    <p><a href="https://github.com/dledw001">Github</a></p>
+</footer> 
 </body>
 </html>
