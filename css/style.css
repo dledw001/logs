@@ -54,8 +54,8 @@ button:hover {
   background-color: #0056b3;
 }
 
-/* Button Styling for Routine Actions */
-.routine-button {
+/* Routine Button Styles */
+a.routine-button {
   display: block;
   width: 100%;
   margin: 10px 0;
@@ -66,16 +66,16 @@ button:hover {
   color: #fff;
   border: none;
   border-radius: 5px;
-  text-decoration: none;
+  text-decoration: none; /* Remove underline */
   cursor: pointer;
 }
 
-.routine-button:hover {
+a.routine-button:hover {
   background-color: #3700b3;
 }
 
-/* Create Routine Button - using same styling */
-.create-routine-button {
+/* Create Routine Button (for the form submit) */
+button.create-routine-button {
   display: block;
   width: 100%;
   margin: 10px 0;
@@ -89,7 +89,7 @@ button:hover {
   cursor: pointer;
 }
 
-.create-routine-button:hover {
+button.create-routine-button:hover {
   background-color: #3700b3;
 }
 
