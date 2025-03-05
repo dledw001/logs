@@ -129,3 +129,33 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+/* Ensure the container is positioned relative */
+.container.position-relative {
+  position: relative;
+}
+
+/* Style for the top-right navigation */
+.top-right-nav {
+  position: absolute;
+  top: 10px;   /* adjust as needed */
+  right: 10px; /* adjust as needed */
+  display: flex;
+  gap: 10px;   /* space between buttons */
+}
+
+/* Example Bootstrap-like button styling if you're not using Bootstrap:
+.top-right-nav a {
+  padding: 8px 12px;
+  background-color: #dc3545;  /* for logout, for example
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+}
+.top-right-nav a.btn-secondary {
+  background-color: #6c757d;
+}
+.top-right-nav a:hover {
+  opacity: 0.9;
+}
+*/

@@ -58,29 +58,31 @@ $routines = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <link rel="icon" href="assets/favicon.png" type="image/x-icon">
 </head>
 <body>
-  <div class="container">
+  <div class="container position-relative">
+    <!-- Top Right Navigation -->
+    <div class="top-right-nav">
+      <a href="settings.php" class="nav-btn">Settings</a>
+      <a href="logout.php" class="nav-btn">Logout</a>
+    </div>
     <h1>Dashboard</h1>
-    <p>Welcome, <?php echo htmlspecialchars($originalUsername); ?>! 
-      <a href="logout.php">Logout</a> 
-      <a href="settings.php">Settings</a>
-    </p>
+    <p>Welcome, <?php echo htmlspecialchars($originalUsername); ?>!</p>
     
     <h2>Create New Routine</h2>
     <?php if ($message): ?>
-      <p><?php echo htmlspecialchars($message); ?></p>
+      <p class="message"><?php echo htmlspecialchars($message); ?></p>
     <?php endif; ?>
     <form action="dashboard.php" method="post">
       <label for="routine_name">Routine Name:</label>
       <input type="text" id="routine_name" name="routine_name" placeholder="Enter routine name" required>
-      <button type="submit">Create Routine</button>
+      <button type="submit" class="btn">Create Routine</button>
     </form>
     
     <h2>Your Routines</h2>
     <?php if (count($routines) > 0): ?>
       <?php foreach ($routines as $routine): ?>
-        <button href="routine_detail.php?routine_id=<?php echo $routine['id']; ?>">
+        <button class="btn routine-btn" onclick="window.location.href='routine_detail.php?routine_id=<?php echo $routine['id']; ?>'">
           <?php echo htmlspecialchars($routine['routine_name']); ?>
-      </button>
+        </button>
       <?php endforeach; ?>
     <?php else: ?>
       <p>You have not created any routines yet.</p>
