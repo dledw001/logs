@@ -61,7 +61,7 @@ $routines = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <div class="container">
     <h1>Dashboard</h1>
     <p>Welcome, <?php echo htmlspecialchars($originalUsername); ?>! 
-      <a href="logout.php">Logout</a> | 
+      <a href="logout.php">Logout</a> 
       <a href="settings.php">Settings</a>
     </p>
     
