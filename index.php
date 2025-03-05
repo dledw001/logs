@@ -81,5 +81,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <button class="button-alt" type="submit">Create new account</button>
     </form>
   </div>
+  <p>&copy 2025 Dan Ledwith</p>
 </body>
 </html>
