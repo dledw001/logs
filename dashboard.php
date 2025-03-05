@@ -57,20 +57,20 @@ $routines = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <!-- Optional: Your custom styles -->
+  <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="assets/favicon.png" type="image/x-icon">
 </head>
-<body class="bg-dark text-light">
+<body class="bg-dark">
   <div class="container mt-5">
-    <div class="card shadow">
+    <div class="card bg-light text-dark shadow">
       <div class="card-header">
-        <h1 class="card-title mb-0">Dashboard</h1>
+        <h1 class="card-title">Dashboard</h1>
+        <p class="mb-0">Welcome, <strong><?php echo htmlspecialchars($originalUsername); ?></strong>!
+          <a href="settings.php" class="btn btn-sm btn-secondary ml-2">Settings</a>
+          <a href="logout.php" class="btn btn-sm btn-danger ml-2">Logout</a>
+        </p>
       </div>
       <div class="card-body">
-        <p>Welcome, <strong><?php echo htmlspecialchars($originalUsername); ?></strong>! 
-          <a href="settings.php" class="btn btn-sm btn-secondary">Settings</a>
-          <a href="logout.php" class="btn btn-sm btn-danger">Logout</a>
-        </p>
-        
         <h2 class="h4">Create New Routine</h2>
         <?php if ($message): ?>
           <div class="alert alert-info"><?php echo htmlspecialchars($message); ?></div>
