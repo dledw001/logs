@@ -121,7 +121,7 @@ foreach ($elements as $element) {
     <p><?php echo $routine_id; ?></p>
     <p><?php echo $log_entries[1]; ?></p>
     <?php foreach ($log_entries as $log_entry): ?>
-          <p><?php echo $log_entry; ?></p>
+          <p><?php echo $log_entry[0]; ?></p>
         <?php endforeach; ?>
 
     <h2>Add New Element</h2>
