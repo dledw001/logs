@@ -122,6 +122,7 @@ foreach ($elements as $element) {
       <tr>
         <td><?php echo htmlspecialchars($log_entry['created_at']); ?></td>
         <td><?php echo htmlspecialchars($log_entry['metric_values']); ?></td>
+        <br>
       </tr>
     <?php endforeach; ?>
 
