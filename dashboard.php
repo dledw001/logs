@@ -61,7 +61,6 @@ $routines = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <div class="container position-relative">
     <!-- Top Right Navigation -->
     <div class="top-right-nav">
-    <h1>Dashboard</h1>
       <a href="settings.php">
         <img class= "icon" src="assets/settings.png" width="32" height="32" alt="Settings">
       </a>

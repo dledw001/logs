@@ -173,9 +173,9 @@ a:hover {
 .icon {
   border-radius: 6px;
   box-sizing: border-box;
-  border: black 1px solid;
   height: 32px;
   width: 32px;
-  margin: auto;
   padding: 2px;
+  background-color: #EEE;
+  border: 1px solid #dddfe2;
 }
