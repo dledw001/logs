@@ -117,7 +117,7 @@ foreach ($elements as $element) {
     <?php if ($message): ?>
       <p><?php echo htmlspecialchars($message); ?></p>
     <?php endif; ?>
-
+    <table>
     <?php foreach ($log_entries as $log_entry): ?>
       <tr>
         <td><?php echo htmlspecialchars($log_entry['created_at']); ?></td>
@@ -128,6 +128,7 @@ foreach ($elements as $element) {
         <br>
       </tr>
     <?php endforeach; ?>
+    </table>
 
     <h2>Add New Element</h2>
     <form action="routine_detail.php?routine_id=<?php echo $routine_id; ?>" method="post">
