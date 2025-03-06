@@ -118,15 +118,26 @@ foreach ($elements as $element) {
       <p><?php echo htmlspecialchars($message); ?></p>
     <?php endif; ?>
     <table>
-    <?php foreach ($log_entries as $log_entry): ?>
-      <tr>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <th>Original Username</th>
+          <th>Created At</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php foreach ($log_entries as $log_entry): ?>
+        <tr>
         <td><?php echo htmlspecialchars($log_entry['created_at']); ?></td>
         <td>
         <?php $file = file_get_contents($log_entry['metric_values']); ?>
         <?php $metric = json_decode($log_entry['metric_values'], true); ?>
         <?php echo $metric['1']; ?> </td>
         <br>
-      </tr>
+        </tr>
+      </tbody>
     <?php endforeach; ?>
     </table>
 
