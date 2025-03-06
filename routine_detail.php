@@ -120,11 +120,8 @@ foreach ($elements as $element) {
     <table>
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Username</th>
-          <th>Original Username</th>
-          <th>Created At</th>
-          <th>Actions</th>
+          <th>Timestamp</th>
+          <th>Metric</th>
         </tr>
       </thead>
       <tbody>
