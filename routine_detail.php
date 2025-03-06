@@ -118,7 +118,7 @@ foreach ($elements as $element) {
       <p><?php echo htmlspecialchars($message); ?></p>
     <?php endif; ?>
 
-
+    <p><?php echo $routine_id; ?></p>
     <p><?php echo $log_entries[0]; ?></p>
 
     <h2>Add New Element</h2>
