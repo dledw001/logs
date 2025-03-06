@@ -171,7 +171,11 @@ a:hover {
 */
 
 .icon {
-  border-color: #000000;
-  border-width: 6px;
-  border-radius: 7px;
+  border-radius: 6px;
+  box-sizing: border-box;
+  border: black 1px solid;
+  height: 32px;
+  width: 32px;
+  margin: auto;
+  padding: 2px;
 }
