@@ -121,8 +121,9 @@ foreach ($elements as $element) {
     <?php foreach ($log_entries as $log_entry): ?>
       <tr>
         <td><?php echo htmlspecialchars($log_entry['created_at']); ?></td>
-        <?php $metric = json_decode($log_entry['metric_values']); ?>
-        <p><?php echo $metric; ?></p>
+        <?php $file = file_get_contents($log_entry['metric_values']); ?>
+        <?php $metric = json_decode($log_entry['metric_values'], true); ?>
+        <p><?php echo $metric['1']; ?></p>
         <td><?php echo htmlspecialchars($log_entry['metric_values']); ?></td>
         <br>
       </tr>
