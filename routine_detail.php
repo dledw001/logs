@@ -118,11 +118,21 @@ foreach ($elements as $element) {
       <p><?php echo htmlspecialchars($message); ?></p>
     <?php endif; ?>
 
-    <p><?php echo $routine_id; ?></p>
-    <p><?php echo $log_entries[1]; ?></p>
     <?php foreach ($log_entries as $log_entry): ?>
-          <p><?php echo $log_entry[0]; ?></p>
-        <?php endforeach; ?>
+      <tr>
+        <td><?php echo htmlspecialchars($log_entry['created_at']); ?></td>
+          <td><?php echo htmlspecialchars($log_entry['metric values']); ?></td>
+            <td><?php echo htmlspecialchars($log_entry['original_username']); ?></td>
+              <td><?php echo htmlspecialchars($log_entry['created_at']); ?></td>
+                <td class="actions">
+                  <?php if ($user['username'] !== 'admin'): ?>
+                    <a href="admin_delete_user.php?user_id=<?php echo $user['id']; ?>" onclick="return confirm('Delete this user?');">Delete</a>
+                  <?php else: ?>
+                    (admin)
+                  <?php endif; ?>
+        </td>
+      </tr>
+    <?php endforeach; ?>
 
     <h2>Add New Element</h2>
     <form action="routine_detail.php?routine_id=<?php echo $routine_id; ?>" method="post">
