@@ -88,7 +88,6 @@ $stmt->execute([$routine_id]);
 $elements = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 //Retrieve logs for this routine
-$log_entries = [];
 $stmt = $pdo->prepare("SELECT * FROM log_entries WHERE routine_id = ? ORDER BY created_at DESC");
 $stmt->execute([$routine_id]);
 $log_entries = $stmt->fetchAll(PDO::FETCH_ASSOC);
