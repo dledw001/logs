@@ -64,7 +64,9 @@ $routines = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <a href="settings.php">
         <img src="assets/settings.png" width="32" height="32" alt="Settings">
       </a>
-      <a href="logout.php" class="nav-btn">Logout</a>
+      <a href="logout.php">
+        <img src="assets/logout.png" width="32" height="32" alt="Logout">
+      </a>
     </div>
     <h1>Dashboard</h1>
 
