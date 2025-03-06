@@ -106,7 +106,7 @@ foreach ($elements as $element) {
 </head>
 <body>
   <div class="container">
-    <h1>Routine: <?php echo htmlspecialchars($routine['routine_name']); ?></h1>
+    <h1><?php echo htmlspecialchars($routine['routine_name']); ?></h1>
     <?php if ($message): ?>
       <p><?php echo htmlspecialchars($message); ?></p>
     <?php endif; ?>
