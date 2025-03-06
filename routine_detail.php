@@ -87,6 +87,12 @@ $stmt = $pdo->prepare("SELECT id, element_name, created_at FROM elements WHERE r
 $stmt->execute([$routine_id]);
 $elements = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+//Retrieve logs for this routine
+$log_entries = [];
+$stmt = $pdo->prepare("SELECT * FROM log_entries WHERE routine_id = ? ORDER BY created_at DESC");
+$stmt->execute([$routine_id]);
+$log_entries = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 // For each element, retrieve its metrics
 $elementMetrics = [];
 foreach ($elements as $element) {
@@ -94,6 +100,7 @@ foreach ($elements as $element) {
     $stmt->execute([$routine_id, $element['id']]);
     $elementMetrics[$element['id']] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
