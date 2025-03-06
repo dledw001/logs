@@ -62,10 +62,10 @@ $routines = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <!-- Top Right Navigation -->
     <div class="top-right-nav">
       <a href="settings.php">
-        <icon src="assets/settings.png" width="32" height="32" alt="Settings">
+        <img class= "icon" src="assets/settings.png" width="32" height="32" alt="Settings">
       </a>
       <a href="logout.php">
-        <icon src="assets/logout.png" width="32" height="32" alt="Logout">
+        <img class = "icon" src="assets/logout.png" width="32" height="32" alt="Logout">
       </a>
     </div>
     <h1>Dashboard</h1>
