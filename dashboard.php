@@ -65,7 +65,7 @@ $routines = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <a href="logout.php" class="nav-btn">Logout</a>
     </div>
     <h1>Dashboard</h1>
-    
+
     <h2>Your Routines</h2>
     <?php if (count($routines) > 0): ?>
       <?php foreach ($routines as $routine): ?>
@@ -82,10 +82,8 @@ $routines = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <p class="message"><?php echo htmlspecialchars($message); ?></p>
     <?php endif; ?>
     <form action="dashboard.php" method="post">
-      <label for="routine_name">Routine Name:</label>
-      <input type="text" id="routine_name" name="routine_name" placeholder="Enter routine name" required>
+      <input type="text" id="routine_name" name="routine_name" placeholder="Routine Name" required>
       <button type="submit" class="btn">Create Routine</button>
-
     </form>
   </div>
 </body>
