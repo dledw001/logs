@@ -117,6 +117,9 @@ foreach ($elements as $element) {
       <p><?php echo htmlspecialchars($message); ?></p>
     <?php endif; ?>
 
+
+    <p><?php echo $log_entries; ?></p>
+
     <h2>Add New Element</h2>
     <form action="routine_detail.php?routine_id=<?php echo $routine_id; ?>" method="post">
       <label for="new_element_name">Element Name:</label>
