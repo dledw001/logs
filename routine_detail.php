@@ -119,7 +119,7 @@ foreach ($elements as $element) {
     <?php endif; ?>
 
     <p><?php echo $routine_id; ?></p>
-    <p><?php echo $log_entries[0]; ?></p>
+    <p><?php echo $log_entries[1]; ?></p>
 
     <h2>Add New Element</h2>
     <form action="routine_detail.php?routine_id=<?php echo $routine_id; ?>" method="post">
