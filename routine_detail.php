@@ -121,16 +121,7 @@ foreach ($elements as $element) {
     <?php foreach ($log_entries as $log_entry): ?>
       <tr>
         <td><?php echo htmlspecialchars($log_entry['created_at']); ?></td>
-          <td><?php echo htmlspecialchars($log_entry['metric values']); ?></td>
-            <td><?php echo htmlspecialchars($log_entry['original_username']); ?></td>
-              <td><?php echo htmlspecialchars($log_entry['created_at']); ?></td>
-                <td class="actions">
-                  <?php if ($user['username'] !== 'admin'): ?>
-                    <a href="admin_delete_user.php?user_id=<?php echo $user['id']; ?>" onclick="return confirm('Delete this user?');">Delete</a>
-                  <?php else: ?>
-                    (admin)
-                  <?php endif; ?>
-        </td>
+        <td><?php echo htmlspecialchars($log_entry['metric_values']); ?></td>
       </tr>
     <?php endforeach; ?>
 
