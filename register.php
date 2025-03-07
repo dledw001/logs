@@ -56,16 +56,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
   <div class="container">
     <img src="assets/logs_color_cropped_256.png" alt="Site Logo" class="logo">
-    <h1>Register</h1>
     <?php if ($error): ?>
       <p style="color:red;"><?php echo htmlspecialchars($error); ?></p>
     <?php endif; ?>
     <form action="register.php" method="post">
-      <label for="username">Username:</label>
-      <input type="text" id="username" name="username" required placeholder="Enter your username">
-      
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" required placeholder="Enter your password">
+      <input type="text" id="username" name="username" required placeholder="Username">
+      <input type="password" id="password" name="password" required placeholder="Password">
       
       <button type="submit">Register</button>
     </form>
