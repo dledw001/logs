@@ -117,6 +117,7 @@ foreach ($elements as $element) {
     <?php if ($message): ?>
       <p><?php echo htmlspecialchars($message); ?></p>
     <?php endif; ?>
+    <p><a href="log_values.php?routine_id=<?php echo $routine['id']; ?>">Back to Dashboard</a></p>
     <table>
       <thead>
         <tr>
