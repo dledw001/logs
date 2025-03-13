@@ -23,6 +23,13 @@ $stmt = $pdo->query("SELECT r.id, r.user_id, r.routine_name, r.created_at, u.ori
                      JOIN users u ON r.user_id = u.id");
 $routines = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Retrieve all metrics
+$stmt = $pdo->query("SELECT m.id, m.routine_id, r.routine_name, m.element_id, e.element_name m.metric_name, m.created_at
+                     FROM metrics m
+                     JOIN elements e ON m.element_id = e.id
+                     JOIN routines r ON m.routine_id = r.id");
+$metrics = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 // Retrieve all logs
 $stmt = $pdo->query("SELECT l.id, l.user_id, l.routine_id, l.metric_values, l.created_at, u.original_username 
                      FROM log_entries l 
@@ -136,6 +143,40 @@ $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </table>
       <?php else: ?>
         <p>No routines found.</p>
+      <?php endif; ?>
+    </div>
+
+    <div class="section">
+      <h2>Metrics</h2>
+      <?php if (count($metrics) > 0): ?>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Routine Name</th>
+              <th>Element Name</th>
+              <th>Metric Name</th>
+              <th>Created At</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php foreach ($metrics as $metric): ?>
+              <tr>
+                <td><?php echo htmlspecialchars($metric['id']); ?></td>
+                <td><?php echo htmlspecialchars($metric['routine_name']); ?></td>
+                <td><?php echo htmlspecialchars($metric['element_name']); ?></td>
+                <td><?php echo htmlspecialchars($metric['metric_name']); ?></td>
+                <td><?php echo htmlspecialchars($metric['created_at']); ?></td>
+                <td class="actions">
+                  <a href="admin_delete_routine.php?routine_id=<?php echo $metric['id']; ?>" onclick="return confirm('Delete this routine?');">Delete</a>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      <?php else: ?>
+        <p>No metrics found.</p>
       <?php endif; ?>
     </div>
     
