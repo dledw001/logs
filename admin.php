@@ -169,7 +169,7 @@ $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <td><?php echo htmlspecialchars($metric['metric_name']); ?></td>
                 <td><?php echo htmlspecialchars($metric['created_at']); ?></td>
                 <td class="actions">
-                  <a href="admin_delete_routine.php?routine_id=<?php echo $metric['id']; ?>" onclick="return confirm('Delete this routine?');">Delete</a>
+                  <a href="admin_delete_metric.php?metric_id=<?php echo $metric['id']; ?>" onclick="return confirm('Delete this routine?');">Delete</a>
                 </td>
               </tr>
             <?php endforeach; ?>
