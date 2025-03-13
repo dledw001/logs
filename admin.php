@@ -26,7 +26,7 @@ $routines = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // Retrieve all metrics
 $stmt = $pdo->query("SELECT m.id, m.routine_id, r.routine_name, m.element_id, e.element_name, m.metric_name, m.created_at
                      FROM metrics m
-                     JOIN elements e ON m.element_id = e.id
+                     LEFT JOIN elements e ON m.element_id = e.id
                      JOIN routines r ON m.routine_id = r.id");
 $metrics = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
