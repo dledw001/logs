@@ -10,7 +10,7 @@
                         {% csrf_token %}
                         <div class="d-grid gap-2">
                             <button class="btn btn-danger" type="submit">Yes, delete</button>
-                            <a class="btn btn-outline-light" href="{{ book.get_absolute_url }}">Cancel</a>
+                            <a class="btn btn-outline-light" href="{% url 'logbooks:detail' book.slug %}">Cancel</a>
                         </div>
                     </form>
                 </div>
