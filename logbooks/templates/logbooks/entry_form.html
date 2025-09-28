@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+{% block title %}{{ view.object|yesno:"Edit Entry,New Entry" }}{% endblock %}
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-12 col-sm-10 col-md-7 col-lg-5">
+            <div class="card bg-dark border-secondary my-4">
+                <div class="card-body">
+                    <h1 class="h5 mb-3">{{ view.object|yesno:"Edit Entry,New Entry" }}</h1>
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary" type="submit">Save</button>
+                            <a class="btn btn-outline-light" href="{{ book.get_absolute_url }}">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

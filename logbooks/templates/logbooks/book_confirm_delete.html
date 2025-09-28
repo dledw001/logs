@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Delete Log Book{% endblock %}
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-12 col-sm-10 col-md-7 col-lg-5">
+            <div class="card bg-dark border-secondary my-4">
+                <div class="card-body">
+                    <h1 class="h5 mb-3">Delete “{{ object.title }}”?</h1>
+                    <p class="text-secondary">This deletes the log book and all its entries.</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-danger" type="submit">Yes, delete</button>
+                            <a class="btn btn-outline-light" href="{{ object.get_absolute_url }}">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

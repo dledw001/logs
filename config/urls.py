@@ -26,11 +26,17 @@ from django.templatetags.static import static as static_url
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
+    path("books/", include(("logbooks.urls", "logbooks"), namespace="logbooks")),
     path('', core_views.root, name='root'),
     path('dashboard/', core_views.dashboard, name='dashboard'),
 
+
     # other #
-    path('favicon.ico', RedirectView.as_view(url=static_url("favicon.ico"), permanent=True)),
+    path('favicon.ico', RedirectView.as_view(url=static_url("favicon.ico"), permanent=False)),
+    path("apple-touch-icon.png",
+         RedirectView.as_view(url=static_url("apple-touch-icon.png"), permanent=False)),
+    path("apple-touch-icon-precomposed.png",
+         RedirectView.as_view(url=static_url("apple-touch-icon-precomposed.png"), permanent=False)),
 ]
 
 if settings.DEBUG:
