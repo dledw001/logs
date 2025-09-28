@@ -1,0 +1,39 @@
+/* Subtle dark form polish */
+.form-control, .form-select {
+  background-color: #1b1b1b;
+  color: #e6e6e6;
+  border-color: #3a3a3a;
+}
+.form-control:focus, .form-select:focus {
+  background-color: #1b1b1b;
+  color: #ffffff;
+  border-color: #86b7fe;
+  box-shadow: none;
+}
+.card.bg-dark { background-color: #121212 !important; }
+
+html, body { overflow-x: hidden; }
+
+input, select, textarea { font-size: 16px; }
+
+@media (max-width: 575.98px) {
+  main.container { padding-left: 1rem; padding-right: 1rem; }
+  .btn { white-space: normal; }
+}
+
+.btn, .form-control { min-height: 44px; }
+
+html { font-size: 16px; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+.navbar .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.25;
+}
+
+.navbar form .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
