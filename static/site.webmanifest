@@ -8,5 +8,6 @@
   "theme_color": "#000000",
   "icons": [
     { "src": "/static/brand/icon_color.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/static/brand/nav-bar-icon.png", "sizes": "256x171", "type": "image/png" }
   ]
 }
