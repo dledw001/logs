@@ -30,7 +30,7 @@ SECRET_KEY = env("SECRET_KEY", default="dev-insecure-only")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0", '10.0.0.213']
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0", '10.0.0.213', 'logs.dledwith.com']
 
 
 # Application definition
@@ -118,7 +118,7 @@ ACCOUNT_SIGNUP_FIELDS = ['username*', 'email*', 'password1*', 'password2*']
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:8080", "http://0.0.0.0:8080", "http://10.0.0.213:8080"]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:8080", "http://0.0.0.0:8080", "http://10.0.0.213:8080", "https://logs.dledwith.com"]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
