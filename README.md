@@ -3,7 +3,8 @@
 ## get it running
 
 ### requirements: 
-    - see requirements file, plus sqlite3
+    - postgresql (see example.env)
+    - see requirements file (install via pip, see below)
 
 ### then
     - create and launch python virtual environment
