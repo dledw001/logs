@@ -10,6 +10,6 @@ class LogBookAdmin(admin.ModelAdmin):
 
 @admin.register(Entry)
 class EntryAdmin(admin.ModelAdmin):
-    list_display = ("book", "title", "occurred_at", "created_at")
-    search_fields = ("title", "content", "book__title", "book__owner__username")
+    list_display = ("book", "occurred_at", "created_at")
+    search_fields = ("short_text", "long_text", "book__title", "book__owner__username")
     list_filter = ("book",)

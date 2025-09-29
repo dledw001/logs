@@ -16,11 +16,6 @@ html, body { overflow-x: hidden; }
 
 input, select, textarea { font-size: 16px; }
 
-@media (max-width: 575.98px) {
-  main.container { padding-left: 1rem; padding-right: 1rem; }
-  .btn { white-space: normal; }
-}
-
 .btn, .form-control { min-height: 44px; }
 
 html { font-size: 16px; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
@@ -29,7 +24,6 @@ html { font-size: 16px; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; 
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  line-height: 1.25;
 }
 
 .navbar form .btn {
@@ -38,8 +32,11 @@ html { font-size: 16px; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; 
   justify-content: center;
 }
 
+.btn {
+    align-content: center;
+}
+
 .navbar-brand img { height: 28px; width: auto; display: block; }
-@media (max-width: 575.98px) { .navbar-brand img { height: 24px; } }
 
 html, body { min-height: 100dvh; background: #000; }
 body { padding-bottom: env(safe-area-inset-bottom); padding-top: env(safe-area-inset-top); }

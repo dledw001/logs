@@ -12,12 +12,12 @@
                 <a href="{% url 'logbooks:detail' b.slug %}"
                    class="list-group-item list-group-item-action bg-dark text-light border-secondary d-flex justify-content-between">
                     <span>{{ b.title }}</span>
-                    <small class="text-secondary">{{ b.entries.count }} entries</small>
+                    <small class="text-secondary">{{ b.entries.count }}</small>
                 </a>
             {% endfor %}
         </div>
     {% else %}
         <p class="text-secondary">No log books yet.</p>
-        <a class="btn btn-primary" href="{% url 'logbooks:create' %}">Create your first</a>
+
     {% endif %}
 {% endblock %}

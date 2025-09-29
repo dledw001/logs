@@ -6,15 +6,15 @@
             <div class="d-flex justify-content-between align-items-start mb-3">
                 <h1 class="h4 m-0">{{ book.title }}</h1>
                 <div class="d-flex gap-2">
-                    <a class="btn btn-outline-light btn-sm" href="{% url 'logbooks:update' book.slug %}">Edit</a>
-                    <a class="btn btn-outline-danger btn-sm" href="{% url 'logbooks:delete' book.slug %}">Delete</a>
+                    <a class="btn btn-outline-light" href="{% url 'logbooks:update' book.slug %}">Edit</a>
+                    <a class="btn btn-outline-danger" href="{% url 'logbooks:delete' book.slug %}">Delete</a>
                 </div>
             </div>
             {% if book.description %}<p class="mb-3">{{ book.description }}</p>{% endif %}
 
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <h2 class="h6 m-0">Entries</h2>
-                <a class="btn btn-primary btn-sm" href="{% url 'logbooks:entry_create' book.slug %}">Add Entry</a>
+                <a class="btn btn-primary" href="{% url 'logbooks:entry_create' book.slug %}">Add Entry</a>
             </div>
 
             {% if entries %}
@@ -22,14 +22,19 @@
                     {% for e in entries %}
                         <div class="list-group-item bg-dark text-light border-secondary">
                             <div class="d-flex justify-content-between">
-                                <strong>{{ e.title|default:"(untitled)" }}</strong>
+                                <strong>{{ e.short_text|default:"(untitled)" }}</strong>
                                 <small class="text-secondary">{{ e.occurred_at|date:"M j, Y H:i" }}</small>
                             </div>
-                            <div class="mt-1 text-secondary small">{{ e.content|truncatechars:180 }}</div>
+                            <div class="mt-1 text-secondary small">{{ e.long_text|truncatechars:180 }}</div>
+                            {% if e.number is not None %}
+                                <div class="mt-1 small">
+                                    <span class="text-secondary">Number:</span> {{ e.number }}
+                                </div>
+                            {% endif %}
                             <div class="mt-2 d-flex gap-2">
-                                <a class="btn btn-outline-light btn-sm"
+                                <a class="btn btn-outline-light"
                                    href="{% url 'logbooks:entry_update' book.slug e.pk %}">Edit</a>
-                                <a class="btn btn-outline-danger btn-sm"
+                                <a class="btn btn-outline-danger"
                                    href="{% url 'logbooks:entry_delete' book.slug e.pk %}">Delete</a>
                             </div>
                         </div>

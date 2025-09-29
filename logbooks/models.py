@@ -48,9 +48,11 @@ class Entry(models.Model):
     book = models.ForeignKey(
         LogBook, on_delete=models.CASCADE, related_name="entries"
     )
-    title = models.CharField(max_length=140, blank=True)
-    content = models.TextField(blank=True)
     occurred_at = models.DateTimeField(default=timezone.now)
+
+    number = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
+    short_text = models.CharField(max_length=200, blank=True)
+    long_text = models.TextField(blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -62,5 +64,5 @@ class Entry(models.Model):
         ]
 
     def __str__(self):
-        return self.title or f"Entry {self.pk}"
+        return f"{self.book.title} @ {self.occurred_at.isoformat()}"
 

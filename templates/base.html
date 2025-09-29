@@ -44,21 +44,21 @@
             <ul class="navbar-nav ms-auto gap-2">
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="btn btn-outline-light btn-sm w-100" href="{% url 'account_change_password' %}">Change
+                        <a class="btn btn-outline-light w-100" href="{% url 'account_change_password' %}">Change
                             Password</a>
                     </li>
                     <li class="nav-item">
                         <form class="d-inline" action="{% url 'account_logout' %}" method="post">
                             {% csrf_token %}
-                            <button class="btn btn-light btn-sm w-100">Log Out</button>
+                            <button class="btn btn-light w-100">Log Out</button>
                         </form>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="btn btn-outline-light btn-sm w-100" href="{% url 'account_login' %}">Log In</a>
+                        <a class="btn btn-outline-light w-100" href="{% url 'account_login' %}">Log In</a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-light btn-sm w-100" href="{% url 'account_signup' %}">Sign Up</a>
+                        <a class="btn btn-light w-100" href="{% url 'account_signup' %}">Sign Up</a>
                     </li>
                 {% endif %}
             </ul>
@@ -70,7 +70,7 @@
     {% if messages %}
         {% for message in messages %}
             <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show mb-3"
-                 role="alert" data-autodismiss="true" data-timeout="3000">
+                 role="alert" data-autodismiss="true" data-timeout="2000">
                 {{ message }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
@@ -83,7 +83,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('.alert[data-autodismiss]').forEach(function (el) {
-            var delay = parseInt(el.getAttribute('data-timeout'), 10) || 4000;
+            var delay = parseInt(el.getAttribute('data-timeout'), 10) || 2000;
 
             // auto-close after delay
             var timer = setTimeout(function () {
