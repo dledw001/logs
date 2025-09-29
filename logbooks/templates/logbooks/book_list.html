@@ -2,8 +2,8 @@
 {% block title %}Your Log Books{% endblock %}
 {% block content %}
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1 class="h4 m-0">Your Log Books</h1>
-        <a class="btn btn-primary" href="{% url 'logbooks:create' %}">New Log Book</a>
+        <h1 class="h4 m-0">Log Books</h1>
+        <a class="btn btn-primary" href="{% url 'logbooks:create' %}">Add Log Book</a>
     </div>
 
     {% if books %}

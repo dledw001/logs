@@ -5,12 +5,9 @@
         <div class="col-12 col-sm-10 col-md-7 col-lg-5 col-xl-4 px-0 px-sm-2">
             <div class="card bg-dark border-secondary shadow rounded-3 my-4">
                 <div class="card-body p-3 p-sm-4">
-                    <h1 class="h4 mb-3">Welcome, {{ request.user.username }}</h1>
-                    <br>
-                    <h2 class="h4 mb-3">Your log books</h2>
+                    <h1 class="h4 mb-3">{{ request.user.username }}</h1>
                     <div class="d-grid gap-2">
-                        <a class="btn btn-primary" href="{% url 'logbooks:list' %}">Open Log Books</a>
-                        <a class="btn btn-outline-light" href="{% url 'logbooks:create' %}">New Log Book</a>
+                        <a class="btn btn-primary" href="{% url 'logbooks:list' %}">Log Books</a>
                     </div>
                 </div>
             </div>
