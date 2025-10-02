@@ -1,23 +1,100 @@
 {% extends "base.html" %}
-{% load crispy_forms_filters %}
-{% load crispy_forms_tags %}
-{% block title %}{{ view.object|yesno:"Edit Entry,New Entry" }}{% endblock %}
+{% block title %}{% if form.instance.pk %}Edit{% else %}Add{% endif %} Entry{% endblock %}
 {% block content %}
-    <div class="row justify-content-center">
-        <div class="col-12 col-sm-10 col-md-7 col-lg-5">
-            <div class="card bg-dark border-secondary my-4">
-                <div class="card-body">
-                    <h1 class="h5 mb-3">{{ view.object|yesno:"Edit Entry,New Entry" }}</h1>
-                    <form method="post" novalidate>
-                        {% csrf_token %}
-                        {{ form|crispy }}
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-primary" type="submit">Save</button>
-                            <a class="btn btn-outline-light" href="{% url 'logbooks:detail' book.slug %}">Cancel</a>
-                        </div>
-                    </form>
-                </div>
+    <h1 class="h4 mb-3">{% if form.instance.pk %}Edit{% else %}Add{% endif %} Entry</h1>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="field-type-selector" class="form-label">Value Type</label>
+            {{ form.field_type }}
+        </div>
+
+        <div class="mb-3">
+            <label id="value-label" class="form-label"></label>
+            
+            <div class="field-input" id="number-field">
+                {{ form.number }}
+                {% if form.number.errors %}
+                    <div class="text-danger">{{ form.number.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="field-input" id="number-array-field" style="display: none;">
+                {{ form.number_array_input }}
+                {% if form.number_array_input.errors %}
+                    <div class="text-danger">{{ form.number_array_input.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="field-input" id="short-text-field" style="display: none;">
+                {{ form.short_text }}
+                {% if form.short_text.errors %}
+                    <div class="text-danger">{{ form.short_text.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="field-input" id="long-text-field" style="display: none;">
+                {{ form.long_text }}
+                {% if form.long_text.errors %}
+                    <div class="text-danger">{{ form.long_text.errors }}</div>
+                {% endif %}
             </div>
         </div>
-    </div>
+
+        <div class="mb-3">
+            <label for="{{ form.occurred_at.id_for_label }}" class="form-label">Occurred At</label>
+            {{ form.occurred_at }}
+            {% if form.occurred_at.errors %}
+                <div class="text-danger">{{ form.occurred_at.errors }}</div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="{% url 'logbooks:detail' book.slug %}" class="btn btn-secondary">Cancel</a>
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const selector = document.getElementById('field-type-selector');
+            const valueLabel = document.getElementById('value-label');
+            const valueContainer = valueLabel.closest('.mb-3');
+            const fields = {
+                'number': document.getElementById('number-field'),
+                'number_array': document.getElementById('number-array-field'),
+                'short_text': document.getElementById('short-text-field'),
+                'long_text': document.getElementById('long-text-field')
+            };
+
+            const labels = {
+                'number': 'Number',
+                'number_array': 'Number Array',
+                'short_text': 'Short Text',
+                'long_text': 'Long Text'
+            };
+
+            function showSelectedField() {
+                const selectedType = selector.value;
+
+                valueLabel.textContent = labels[selectedType];
+
+                for (const [fieldType, fieldDiv] of Object.entries(fields)) {
+                    if (fieldType === selectedType) {
+                        fieldDiv.style.display = 'block';
+                    } else {
+                        fieldDiv.style.display = 'none';
+                        const input = fieldDiv.querySelector('input, textarea');
+                        if (input && fieldType !== selectedType) {
+                            input.value = '';
+                        }
+                    }
+                }
+            }
+
+            showSelectedField();
+
+            selector.addEventListener('change', showSelectedField);
+        });
+    </script>
 {% endblock %}

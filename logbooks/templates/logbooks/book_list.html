@@ -11,7 +11,7 @@
             {% for b in books %}
                 <a href="{% url 'logbooks:detail' b.slug %}"
                    class="list-group-item list-group-item-action bg-dark text-light border-secondary d-flex justify-content-between">
-                    <span>{{ b.title }}</span>
+                    <span>{{ b.title }} </span>
                     <small class="text-secondary">{{ b.entries.count }}</small>
                 </a>
             {% endfor %}

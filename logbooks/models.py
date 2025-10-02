@@ -1,8 +1,9 @@
-from django.db import models
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
+
+# from django.contrib.postgres.fields import ArrayField add this if you move to postgres
 
 
 class LogBook(models.Model):
@@ -50,7 +51,17 @@ class Entry(models.Model):
     book = models.ForeignKey(LogBook, on_delete=models.CASCADE, related_name="entries")
     occurred_at = models.DateTimeField(default=timezone.now)
 
-    number = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
+    number = models.DecimalField(max_digits=18, decimal_places=3, null=True, blank=True)
+
+    ### number_array = models.ArrayField(
+    ### models.DecimalField(max_digits=18, decimal_places=3),
+    ### blank=True,
+    ### null=True,
+    ### default=list
+    ###)
+
+    number_array = models.JSONField(blank=True, null=True, default=list)
+
     short_text = models.CharField(max_length=200, blank=True)
     long_text = models.TextField(blank=True)
 
