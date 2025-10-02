@@ -6,37 +6,40 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('logbooks', '0002_logbookfield_remove_entry_content_remove_entry_title_and_more'),
+        (
+            "logbooks",
+            "0002_logbookfield_remove_entry_content_remove_entry_title_and_more",
+        ),
     ]
 
     operations = [
         migrations.AlterUniqueTogether(
-            name='logbookfield',
+            name="logbookfield",
             unique_together=None,
         ),
         migrations.RemoveField(
-            model_name='logbookfield',
-            name='book',
+            model_name="logbookfield",
+            name="book",
         ),
         migrations.RemoveIndex(
-            model_name='entry',
-            name='gin_entry_data',
+            model_name="entry",
+            name="gin_entry_data",
         ),
         migrations.RenameField(
-            model_name='entry',
-            old_name='note',
-            new_name='content',
+            model_name="entry",
+            old_name="note",
+            new_name="content",
         ),
         migrations.RemoveField(
-            model_name='entry',
-            name='data',
+            model_name="entry",
+            name="data",
         ),
         migrations.AddField(
-            model_name='entry',
-            name='title',
+            model_name="entry",
+            name="title",
             field=models.CharField(blank=True, max_length=140),
         ),
         migrations.DeleteModel(
-            name='LogBookField',
+            name="LogBookField",
         ),
     ]

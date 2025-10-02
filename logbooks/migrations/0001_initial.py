@@ -16,45 +16,82 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='LogBook',
+            name="LogBook",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=120)),
-                ('slug', models.SlugField(blank=True, max_length=140)),
-                ('description', models.TextField(blank=True)),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='logbooks', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=120)),
+                ("slug", models.SlugField(blank=True, max_length=140)),
+                ("description", models.TextField(blank=True)),
+                ("created_at", models.DateTimeField(default=django.utils.timezone.now)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "owner",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="logbooks",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-created_at'],
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='Entry',
+            name="Entry",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(blank=True, max_length=140)),
-                ('content', models.TextField()),
-                ('occurred_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('book', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='entries', to='logbooks.logbook')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(blank=True, max_length=140)),
+                ("content", models.TextField()),
+                (
+                    "occurred_at",
+                    models.DateTimeField(default=django.utils.timezone.now),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "book",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="entries",
+                        to="logbooks.logbook",
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-occurred_at', '-id'],
+                "ordering": ["-occurred_at", "-id"],
             },
         ),
         migrations.AddIndex(
-            model_name='logbook',
-            index=models.Index(fields=['owner', 'slug'], name='idx_logbook_owner_slug'),
+            model_name="logbook",
+            index=models.Index(fields=["owner", "slug"], name="idx_logbook_owner_slug"),
         ),
         migrations.AddConstraint(
-            model_name='logbook',
-            constraint=models.UniqueConstraint(fields=('owner', 'slug'), name='uniq_logbook_owner_slug'),
+            model_name="logbook",
+            constraint=models.UniqueConstraint(
+                fields=("owner", "slug"), name="uniq_logbook_owner_slug"
+            ),
         ),
         migrations.AddIndex(
-            model_name='entry',
-            index=models.Index(fields=['book', 'occurred_at'], name='idx_entry_book_when'),
+            model_name="entry",
+            index=models.Index(
+                fields=["book", "occurred_at"], name="idx_entry_book_when"
+            ),
         ),
     ]

@@ -4,11 +4,12 @@ from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
 
+
 class LogBook(models.Model):
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='logbooks',
+        related_name="logbooks",
     )
     title = models.CharField(max_length=120)
     slug = models.SlugField(max_length=140, blank=True)
@@ -20,15 +21,13 @@ class LogBook(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['owner', 'slug'],
-                name='uniq_logbook_owner_slug'
+                fields=["owner", "slug"], name="uniq_logbook_owner_slug"
             )
         ]
-        indexes = [models.Index(
-            fields=['owner', 'slug'],
-            name='idx_logbook_owner_slug')
+        indexes = [
+            models.Index(fields=["owner", "slug"], name="idx_logbook_owner_slug")
         ]
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
 
     def __str__(self):
         return f"{self.title} ({self.owner})"
@@ -38,16 +37,17 @@ class LogBook(models.Model):
             base = slugify(self.title) or "logbook"
             slug = base
             i = 2
-            while LogBook.objects.filter(owner=self.owner, slug=slug).exists():     #ignore warn, created at runtime.
+            while LogBook.objects.filter(
+                owner=self.owner, slug=slug
+            ).exists():  # ignore warn, created at runtime.
                 slug = f"{base}-{i}"
                 i += 1
             self.slug = slug
         super().save(*args, **kwargs)
 
+
 class Entry(models.Model):
-    book = models.ForeignKey(
-        LogBook, on_delete=models.CASCADE, related_name="entries"
-    )
+    book = models.ForeignKey(LogBook, on_delete=models.CASCADE, related_name="entries")
     occurred_at = models.DateTimeField(default=timezone.now)
 
     number = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
@@ -65,4 +65,3 @@ class Entry(models.Model):
 
     def __str__(self):
         return f"{self.book.title} @ {self.occurred_at.isoformat()}"
-

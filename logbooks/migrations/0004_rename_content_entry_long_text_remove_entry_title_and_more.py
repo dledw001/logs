@@ -6,22 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('logbooks', '0003_alter_logbookfield_unique_together_and_more'),
+        ("logbooks", "0003_alter_logbookfield_unique_together_and_more"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='entry',
-            old_name='content',
-            new_name='long_text',
+            model_name="entry",
+            old_name="content",
+            new_name="long_text",
         ),
         migrations.RemoveField(
-            model_name='entry',
-            name='title',
+            model_name="entry",
+            name="title",
         ),
         migrations.AddField(
-            model_name='entry',
-            name='short_text',
+            model_name="entry",
+            name="short_text",
             field=models.CharField(blank=True, max_length=200),
         ),
     ]

@@ -5,19 +5,29 @@ from django.urls import resolve
 
 # Public endpoints that must bypass auth (icons/manifest/etc.)
 EXEMPT_PREFIXES = (
-    "/accounts/", "/admin/", "/static/", "/media/",
+    "/accounts/",
+    "/admin/",
+    "/static/",
+    "/media/",
     "/favicon.ico",
     "/apple-touch-icon.png",
     "/apple-touch-icon-precomposed.png",
-    "/site.webmanifest", "/manifest.webmanifest", "/manifest.json",
-    "/sw.js", "/service-worker.js",
-    "/robots.txt", "/.well-known/",
+    "/site.webmanifest",
+    "/manifest.webmanifest",
+    "/manifest.json",
+    "/sw.js",
+    "/service-worker.js",
+    "/robots.txt",
+    "/.well-known/",
 )
 
 # If you used RedirectView routes for icons, exempt by URL name too.
 EXEMPT_URL_NAMES = {
-    "apple_touch_icon", "apple_touch_icon_pre", "favicon_root",
+    "apple_touch_icon",
+    "apple_touch_icon_pre",
+    "favicon_root",
 }
+
 
 class LoginRequiredMiddleware:
     def __init__(self, get_response):

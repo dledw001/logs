@@ -14,6 +14,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import RedirectView
@@ -24,19 +25,26 @@ from django.conf.urls.static import static
 from django.templatetags.static import static as static_url
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('accounts/', include('allauth.urls')),
+    path("admin/", admin.site.urls),
+    path("accounts/", include("allauth.urls")),
     path("books/", include(("logbooks.urls", "logbooks"), namespace="logbooks")),
-    path('', core_views.root, name='root'),
-    path('dashboard/', core_views.dashboard, name='dashboard'),
-
-
+    path("", core_views.root, name="root"),
+    path("dashboard/", core_views.dashboard, name="dashboard"),
     # other #
-    path('favicon.ico', RedirectView.as_view(url=static_url("favicon.ico"), permanent=False)),
-    path("apple-touch-icon.png",
-         RedirectView.as_view(url=static_url("apple-touch-icon.png"), permanent=False)),
-    path("apple-touch-icon-precomposed.png",
-         RedirectView.as_view(url=static_url("apple-touch-icon-precomposed.png"), permanent=False)),
+    path(
+        "favicon.ico",
+        RedirectView.as_view(url=static_url("favicon.ico"), permanent=False),
+    ),
+    path(
+        "apple-touch-icon.png",
+        RedirectView.as_view(url=static_url("apple-touch-icon.png"), permanent=False),
+    ),
+    path(
+        "apple-touch-icon-precomposed.png",
+        RedirectView.as_view(
+            url=static_url("apple-touch-icon-precomposed.png"), permanent=False
+        ),
+    ),
 ]
 
 if settings.DEBUG:

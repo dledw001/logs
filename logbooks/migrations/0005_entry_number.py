@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('logbooks', '0004_rename_content_entry_long_text_remove_entry_title_and_more'),
+        ("logbooks", "0004_rename_content_entry_long_text_remove_entry_title_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='entry',
-            name='number',
-            field=models.DecimalField(blank=True, decimal_places=3, max_digits=12, null=True),
+            model_name="entry",
+            name="number",
+            field=models.DecimalField(
+                blank=True, decimal_places=3, max_digits=12, null=True
+            ),
         ),
     ]

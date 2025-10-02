@@ -1,21 +1,30 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.urls import reverse, reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    UpdateView,
+    DeleteView,
+)
 from django.shortcuts import get_object_or_404
 from .models import LogBook, Entry
 from .forms import LogBookForm, EntryForm
+
 
 # ----- LogBooks -----
 class OwnerQuerysetMixin(LoginRequiredMixin):
     def get_queryset(self):
         return LogBook.objects.filter(owner=self.request.user)
 
+
 class BookList(OwnerQuerysetMixin, ListView):
     model = LogBook
     template_name = "logbooks/book_list.html"
     context_object_name = "books"
     ordering = ["title"]
+
 
 class BookDetail(OwnerQuerysetMixin, DetailView):
     model = LogBook
@@ -29,6 +38,7 @@ class BookDetail(OwnerQuerysetMixin, DetailView):
         ctx["entries"] = self.object.entries.order_by("-occurred_at", "-id")
         return ctx
 
+
 class BookCreate(LoginRequiredMixin, CreateView):
     model = LogBook
     form_class = LogBookForm
@@ -41,6 +51,7 @@ class BookCreate(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         return reverse("logbooks:detail", args=[self.object.slug])
+
 
 class BookUpdate(OwnerQuerysetMixin, UpdateView):
     model = LogBook
@@ -56,6 +67,7 @@ class BookUpdate(OwnerQuerysetMixin, UpdateView):
     def get_success_url(self):
         return reverse("logbooks:detail", args=[self.object.slug])
 
+
 class BookDelete(OwnerQuerysetMixin, DeleteView):
     model = LogBook
     slug_field = "slug"
@@ -67,9 +79,11 @@ class BookDelete(OwnerQuerysetMixin, DeleteView):
         messages.success(self.request, "Log book deleted.")
         return super().delete(request, *args, **kwargs)
 
+
 # ----- Entries (nested under a book) -----
 class BookLookupMixin(LoginRequiredMixin):
     """Load the parent book owned by the current user."""
+
     book: LogBook
 
     def dispatch(self, request, *args, **kwargs):
@@ -84,6 +98,7 @@ class BookLookupMixin(LoginRequiredMixin):
         ctx["book"] = self.book
         return ctx
 
+
 class EntryCreate(BookLookupMixin, CreateView):
     model = Entry
     form_class = EntryForm
@@ -94,24 +109,30 @@ class EntryCreate(BookLookupMixin, CreateView):
         messages.success(self.request, "Entry added.")
         return super().form_valid(form)
 
+
 class EntryUpdate(BookLookupMixin, UpdateView):
     model = Entry
     form_class = EntryForm
     template_name = "logbooks/entry_form.html"
 
     def get_queryset(self):
-        return Entry.objects.filter(book__owner=self.request.user, book__slug=self.kwargs["slug"])
+        return Entry.objects.filter(
+            book__owner=self.request.user, book__slug=self.kwargs["slug"]
+        )
 
     def form_valid(self, form):
         messages.success(self.request, "Entry updated.")
         return super().form_valid(form)
+
 
 class EntryDelete(BookLookupMixin, DeleteView):
     model = Entry
     template_name = "logbooks/entry_confirm_delete.html"
 
     def get_queryset(self):
-        return Entry.objects.filter(book__owner=self.request.user, book__slug=self.kwargs["slug"])
+        return Entry.objects.filter(
+            book__owner=self.request.user, book__slug=self.kwargs["slug"]
+        )
 
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, "Entry deleted.")
