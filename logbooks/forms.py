@@ -37,7 +37,13 @@ class EntryForm(forms.ModelForm):
 
     class Meta:
         model = Entry
-        fields = ["number", "number_array", "short_text", "long_text", "occurred_at"]
+        fields = [
+            "number",
+            "number_array",
+            "short_text",
+            "long_text",
+            "occurred_at"
+        ]
         widgets = {
             "occurred_at": forms.DateTimeInput(
                 attrs={"type": "datetime-local"},
@@ -59,14 +65,14 @@ class EntryForm(forms.ModelForm):
 
         if self.instance and self.instance.pk and self.instance.number_array:
             self.fields["number_array_input"].initial = ", ".join(
-                str(n) for n in self.instance.number_array
+               str(n) for n in self.instance.number_array
             )
 
         if self.instance and self.instance.pk:
             if self.instance.number is not None:
                 self.fields["field_type"].initial = "number"
             elif self.instance.number_array:
-                self.fields["field_type"].initial = "number_array"
+               self.fields["field_type"].initial = "number_array"
             elif self.instance.short_text:
                 self.fields["field_type"].initial = "short_text"
             elif self.instance.long_text:

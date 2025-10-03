@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    "django.contrib.postgres"
 ]
 
 SITE_ID = 1
@@ -98,7 +99,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": env.db(
         "DATABASE_URL",
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",  # fallback for first boot if you want
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
     )
 }
 
