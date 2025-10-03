@@ -25,44 +25,34 @@
 
 </head>
 <body class="bg-black text-light">
-<nav class="navbar navbar-expand-lg navbar-dark border-bottom border-secondary">
+<nav class="navbar navbar-dark bg-dark border-bottom border-secondary">
     <div class="container">
-        <a class="navbar-brand d-inline-flex align-items-center gap-2"
-           href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'account_login' %}{% endif %}">
-            <img src="{% static 'brand/nav-bar-icon.png' %}"
-                 alt="Logs" height="28" class="d-block">
+        <a class="navbar-brand d-inline-flex align-items-center gap-2" href="{% url 'dashboard' %}">
+            <img src="{% static 'brand/nav-bar-icon.png' %}" alt="Logs" height="28" class="d-block">
             <span class="fw-semibold">Logs</span>
         </a>
 
-        <button class="navbar-toggler" type="button"
-                data-bs-toggle="collapse" data-bs-target="#mainNav"
-                aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="mainNav">
-            <ul class="navbar-nav ms-auto gap-2">
-                {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="btn btn-outline-light w-100" href="{% url 'account_change_password' %}">Change
-                            Password</a>
+        {% if user.is_authenticated %}
+            <div class="ms-auto d-flex align-items-center">
+                <a href="{% url 'account_change_password' %}"
+                   class="text-light text-decoration-none fw-semibold"
+                   id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                    {{ user.get_username }}
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark" aria-labelledby="userMenu">
+                    <li><a class="dropdown-item" href="{% url 'account_change_password' %}">Manage account</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
                     </li>
-                    <li class="nav-item">
-                        <form class="d-inline" action="{% url 'account_logout' %}" method="post">
+                    <li>
+                        <form action="{% url 'account_logout' %}" method="post">
                             {% csrf_token %}
-                            <button class="btn btn-light w-100">Log Out</button>
+                            <button class="dropdown-item" type="submit">Log out</button>
                         </form>
                     </li>
-                {% else %}
-                    <li class="nav-item">
-                        <a class="btn btn-outline-light w-100" href="{% url 'account_login' %}">Log In</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="btn btn-light w-100" href="{% url 'account_signup' %}">Sign Up</a>
-                    </li>
-                {% endif %}
-            </ul>
-        </div>
+                </ul>
+            </div>
+        {% endif %}
     </div>
 </nav>
 
