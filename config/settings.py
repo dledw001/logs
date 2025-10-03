@@ -111,7 +111,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 LOGIN_URL = "account_login"
-LOGIN_REDIRECT_URL = "dashboard"
+LOGIN_REDIRECT_URL = "logbooks:list"
 LOGOUT_REDIRECT_URL = "account_login"
 ACCOUNT_LOGIN_METHODS = ["username", "email"]
 ACCOUNT_SIGNUP_FIELDS = ["username*", "email*", "password1*", "password2*"]
