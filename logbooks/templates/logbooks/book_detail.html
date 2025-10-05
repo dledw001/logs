@@ -3,54 +3,85 @@
 {% block content %}
     <div class="row justify-content-center">
         <div class="col-12 col-lg-8">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-                <h1 class="h4 m-0">{{ book.title }}</h1>
-                <div class="d-flex gap-2">
-                    <a class="btn btn-outline-light" href="{% url 'logbooks:update' book.slug %}">Edit</a>
-                    <a class="btn btn-outline-danger" href="{% url 'logbooks:delete' book.slug %}">Delete</a>
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="h4 m-0">{{ book.title }}</h2>
+                <div class="ms-auto d-flex justify-content-between align-items-center gap-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                         class="bi bi-graph-up" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                              d="M0 0h1v15h15v1H0zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07"/>
+                    </svg>
+                    <a class="text-light text-decoration-none fw-semibold"
+                       id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                             fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+                            <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"/>
+                        </svg>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end dropdown-menu-center gap-4">
+                        <li>
+                            <a class="dropdown-item"
+                               href="{% url 'logbooks:update' book.slug %}">Edit</a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-item"
+                               href="{% url 'logbooks:delete' book.slug %}">Delete</a>
+                        </li>
+                    </div>
+
                 </div>
             </div>
-            {% if book.description %}<p class="mb-3">{{ book.description }}</p>{% endif %}
-
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <h2 class="h6 m-0">Entries</h2>
-                <a class="btn btn-primary" href="{% url 'logbooks:entry_create' book.slug %}">Add Entry</a>
+            <hr class="mb-0">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <p class="h5 m-0">Entries</p>
+                <a class="btn bg-transparent" href="{% url 'logbooks:entry_create' book.slug %}">
+                    <p class="h5 m-0">+</p>
+                </a>
             </div>
 
             {% if entries %}
                 <div class="list-group">
                     {% for e in entries %}
-                        <div class="list-group-item bg-dark text-light border-secondary">
+                        <div class="list-group-item border-secondary">
                             <div class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-2">
-
-                                    {% if e.short_text %}
-                                        <strong class="me-2">{{ e.short_text }}</strong>
-                                    {% endif %}
-                                    <small class="text-secondary">{{ e.occurred_at|date:"m/j/y g:i a" }}</small>
+                                <div class="align-items-center">
+                                    {{ e.number }}
+                                    <small class="text-secondary">
+                                        {{ e.occurred_at|date:"Y-m-d" }}
+                                        •
+                                        {{ e.occurred_at|date:"g:i" }}
+                                    </small>
                                 </div>
-                                <div class="d-flex align-items-center gap-2">
-                                    <a class="btn btn-outline-light"
-                                       href="{% url 'logbooks:entry_update' book.slug e.pk %}">Edit</a>
-                                    <a class="btn btn-outline-danger"
-                                       href="{% url 'logbooks:entry_delete' book.slug e.pk %}">Delete</a>
+                                <div class="ms-auto d-flex">
+                                    <a class="text-light text-decoration-none fw-semibold"
+                                       id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                             fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+                                            <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"/>
+                                        </svg>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-end dropdown-menu-center">
+
+                                        <li>
+                                            <a class="dropdown-item"
+                                               href="{% url 'logbooks:entry_update' book.slug e.pk %}">Edit</a>
+                                        </li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item"
+                                               href="{% url 'logbooks:entry_delete' book.slug e.pk %}">Delete</a>
+                                        </li>
+
+                                    </div>
                                 </div>
                             </div>
-                            {% if e.long_text %}
-                                <div class="mt-1 text-secondary small">{{ e.long_text|truncatechars:180 }}</div>
-                            {% endif %}
-                            {% if e.number is not None %}
-                                <div class="mt-1 small">
-                                    <span class="text-secondary">Number:</span> {{ e.number }}
-                                </div>
-                            {% endif %}
-                            <div class="mt-1 text-secondary small text-end">
-                                {{ e.occurred_at|date:"m/j/y g:i a" }}
-                            </div>
-
                         </div>
                     {% endfor %}
-
                 </div>
             {% else %}
                 <p class="text-secondary">No entries yet.</p>
