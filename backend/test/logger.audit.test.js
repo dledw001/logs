@@ -26,6 +26,7 @@ describe("audit logger", () => {
     process.env.AUDIT_LOG_ENABLED = "true";
     process.env.AUDIT_LOG_CONSOLE = "false";
     process.env.AUDIT_LOG_FILE = "/nonexistent/dir/audit.log";
+    process.env.AUDIT_DB_ENABLED = "false";
 
     const errorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 

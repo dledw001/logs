@@ -54,6 +54,7 @@
     "/api/auth/register": {
       "post": {
         "summary": "Register user",
+        "tags": ["auth"],
         "requestBody": {
           "required": true,
           "content": {
@@ -92,6 +93,7 @@
       "post": {
         "summary": "Login",
         "operationId": "login",
+        "tags": ["auth"],
         "requestBody": {
           "required": true,
           "content": {
@@ -124,6 +126,7 @@
     "/api/auth/logout": {
       "post": {
         "summary": "Logout",
+        "tags": ["auth"],
         "security": [{ "cookieAuth": [] }],
         "parameters": [
           {
@@ -151,6 +154,7 @@
     "/api/auth/me": {
       "get": {
         "summary": "Current user",
+        "tags": ["auth"],
         "security": [{ "cookieAuth": [] }],
         "responses": {
           "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } } },
@@ -158,10 +162,60 @@
         }
       }
     },
+    "/api/auth/sessions": {
+      "get": {
+        "summary": "List my sessions",
+        "tags": ["auth"],
+        "security": [{ "cookieAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Sessions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "sessions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "integer" },
+                          "created_at": { "type": "string", "format": "date-time" },
+                          "expires_at": { "type": "string", "format": "date-time" },
+                          "last_seen_at": { "type": "string", "format": "date-time" },
+                          "revoked_at": { "type": "string", "format": "date-time", "nullable": true }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Not authenticated" }
+        }
+      }
+    },
+    "/api/auth/sessions/revoke-others": {
+      "post": {
+        "summary": "Revoke other sessions",
+        "tags": ["auth"],
+        "security": [{ "cookieAuth": [] }],
+        "parameters": [
+          { "name": "x-csrf-token", "in": "header", "required": true, "schema": { "type": "string" }, "description": "CSRF token" }
+        ],
+        "responses": {
+          "204": { "description": "Other sessions revoked" },
+          "401": { "description": "Not authenticated" }
+        }
+      }
+    },
     "/api/auth/email/verify/request": {
       "post": {
         "summary": "Request email verification token",
         "operationId": "emailVerifyRequest",
+        "tags": ["auth"],
         "security": [{ "cookieAuth": [] }],
         "parameters": [
           { "name": "x-csrf-token", "in": "header", "required": true, "schema": { "type": "string" }, "description": "CSRF token from csrf_token cookie" }
@@ -180,6 +234,7 @@
       "post": {
         "summary": "Complete email verification",
         "operationId": "emailVerifyComplete",
+        "tags": ["auth"],
         "parameters": [
           { "name": "x-csrf-token", "in": "header", "required": true, "schema": { "type": "string" }, "description": "CSRF token from csrf_token cookie" }
         ],
@@ -201,6 +256,7 @@
       "post": {
         "summary": "Change password",
         "operationId": "changePassword",
+        "tags": ["auth"],
         "security": [{ "cookieAuth": [] }],
         "parameters": [
           { "name": "x-csrf-token", "in": "header", "required": true, "schema": { "type": "string" }, "description": "CSRF token from csrf_token cookie" }
@@ -231,6 +287,7 @@
       "delete": {
         "summary": "Delete account",
         "operationId": "deleteAccount",
+        "tags": ["auth"],
         "security": [{ "cookieAuth": [] }],
         "parameters": [
           { "name": "x-csrf-token", "in": "header", "required": true, "schema": { "type": "string" }, "description": "CSRF token from csrf_token cookie" }
@@ -245,6 +302,7 @@
       "post": {
         "summary": "Request password reset",
         "operationId": "passwordResetRequest",
+        "tags": ["auth"],
         "requestBody": {
           "required": true,
           "content": {
@@ -264,6 +322,7 @@
       "post": {
         "summary": "Complete password reset",
         "operationId": "passwordResetComplete",
+        "tags": ["auth"],
         "requestBody": {
           "required": true,
           "content": {
@@ -288,6 +347,7 @@
     "/api/admin/ping": {
       "get": {
         "summary": "Admin ping",
+        "tags": ["admin"],
         "security": [{ "cookieAuth": [] }],
         "responses": {
           "200": { "description": "OK", "content": { "application/json": { "schema": { "type": "object", "properties": { "ok": { "type": "boolean" } } } } } },
@@ -299,6 +359,7 @@
     "/api/admin/users": {
       "get": {
         "summary": "List all users (admin)",
+        "tags": ["admin"],
         "security": [{ "cookieAuth": [] }],
         "responses": {
           "200": {
@@ -325,6 +386,7 @@
     "/api/admin/users/{userId}/roles": {
       "put": {
         "summary": "Update user roles (admin)",
+        "tags": ["admin"],
         "security": [{ "cookieAuth": [] }],
         "parameters": [
           {
@@ -361,9 +423,96 @@
         }
       }
     },
+    "/api/admin/audit-log": {
+      "get": {
+        "summary": "Audit log (admin)",
+        "tags": ["admin"],
+        "security": [{ "cookieAuth": [] }],
+        "parameters": [
+          { "name": "event", "in": "query", "schema": { "type": "string" }, "required": false },
+          { "name": "user_id", "in": "query", "schema": { "type": "integer" }, "required": false },
+          { "name": "since", "in": "query", "schema": { "type": "string", "format": "date-time" }, "required": false },
+          { "name": "until", "in": "query", "schema": { "type": "string", "format": "date-time" }, "required": false },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 100 } },
+          { "name": "offset", "in": "query", "schema": { "type": "integer", "default": 0 } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "entries": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "integer" },
+                          "ts": { "type": "string", "format": "date-time" },
+                          "event": { "type": "string" },
+                          "user_id": { "type": "integer", "nullable": true },
+                          "username": { "type": "string", "nullable": true },
+                          "email": { "type": "string", "format": "email", "nullable": true },
+                          "ip": { "type": "string", "nullable": true },
+                          "meta": { "type": "object" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Not authenticated" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/config": {
+      "get": {
+        "summary": "Runtime config",
+        "tags": ["ops"],
+        "responses": {
+          "200": {
+            "description": "Settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "session": {
+                      "type": "object",
+                      "properties": {
+                        "max_per_user": { "type": "integer" },
+                        "idle_timeout_minutes": { "type": "integer" },
+                        "ttl_days": { "type": "integer" },
+                        "rolling_renewal_minutes": { "type": "integer" }
+                      }
+                    },
+                    "rate_limits": {
+                      "type": "object",
+                      "properties": {
+                        "login_ip_max": { "type": "integer" },
+                        "login_id_max": { "type": "integer" },
+                        "login_window_ms": { "type": "integer" },
+                        "reset_max": { "type": "integer" },
+                        "reset_window_ms": { "type": "integer" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health": {
       "get": {
         "summary": "Healthcheck",
+        "tags": ["ops"],
         "responses": { "200": { "description": "OK" } }
       }
     },
@@ -409,6 +558,7 @@
     "/metrics": {
       "get": {
         "summary": "Metrics",
+        "tags": ["ops"],
         "responses": { "200": { "description": "OK" } }
       }
     }

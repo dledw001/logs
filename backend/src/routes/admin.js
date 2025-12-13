@@ -3,6 +3,7 @@ import { requireAuth } from "../middleware/auth.js";
 import { requireRole } from "../auth/authorization.js";
 import { query } from "../db/db.js";
 import { audit } from "../logger/audit.js";
+import { parseISO } from "date-fns";
 
 export function handleAdminPing(req, res) {
     res.status(200).json({ ok: true, user_id: req.user.id });
@@ -89,9 +90,55 @@ export async function handleAdminUpdateRoles(req, res) {
     return res.json(updated.rows[0]);
 }
 
+export async function handleAdminAuditLog(req, res) {
+    const { event, user_id, since, until, limit = 100, offset = 0 } = req.query;
+    const clauses = [];
+    const params = [];
+
+    if (event) {
+        params.push(event);
+        clauses.push(`event = $${params.length}`);
+    }
+    if (user_id) {
+        params.push(Number(user_id));
+        clauses.push(`user_id = $${params.length}`);
+    }
+    if (since) {
+        const ts = parseISO(String(since));
+        if (!isNaN(ts)) {
+            params.push(ts.toISOString());
+            clauses.push(`ts >= $${params.length}`);
+        }
+    }
+    if (until) {
+        const ts = parseISO(String(until));
+        if (!isNaN(ts)) {
+            params.push(ts.toISOString());
+            clauses.push(`ts <= $${params.length}`);
+        }
+    }
+    params.push(Math.min(Number(limit) || 100, 500));
+    params.push(Number(offset) || 0);
+
+    const where = clauses.length ? `WHERE ${clauses.join(" AND ")}` : "";
+    const result = await query(
+        `SELECT id, ts, event, user_id, username, email, ip, meta
+         FROM audit_log
+         ${where}
+         ORDER BY ts DESC
+         LIMIT $${params.length - 1}
+         OFFSET $${params.length}`,
+        params
+    );
+
+    audit("admin.audit.list", { actor_id: req.user.id, count: result.rowCount, ip: req.ip });
+    res.json({ entries: result.rows });
+}
+
 const router = Router();
 router.get("/ping", requireAuth, requireRole("admin"), handleAdminPing);
 router.get("/users", requireAuth, requireRole("admin"), handleAdminUsers);
 router.put("/users/:userId/roles", requireAuth, requireRole("admin"), handleAdminUpdateRoles);
+router.get("/audit-log", requireAuth, requireRole("admin"), handleAdminAuditLog);
 
 export default router;

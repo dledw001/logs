@@ -7,6 +7,8 @@ import {
     SESSION_COOKIE_NAME,
     SESSION_TTL_DAYS,
     SESSION_IDLE_TIMEOUT_MS,
+    SESSION_ROLLING_RENEWAL_MINUTES,
+    SESSION_MAX_PER_USER,
     cookieOptions,
 } from "../auth/session.js";
 import { requireAuth } from "../middleware/auth.js";
@@ -293,6 +295,20 @@ export async function handleLogin(req, res) {
             maxAge: SESSION_TTL_MS,
         });
         issueCsrfToken(res);
+
+        // enforce max concurrent sessions
+        if (SESSION_MAX_PER_USER > 0) {
+            await query(
+                `WITH ordered AS (
+                    SELECT id FROM sessions
+                    WHERE user_id = $1 AND revoked_at IS NULL
+                    ORDER BY last_seen_at DESC
+                    OFFSET $2
+                )
+                UPDATE sessions SET revoked_at = now() WHERE id IN (SELECT id FROM ordered)`,
+                [user.id, SESSION_MAX_PER_USER]
+            );
+        }
         audit("auth.login.success", { user_id: user.id, username: user.username, ip: req.ip });
 
         return res.status(200).json({
@@ -592,6 +608,38 @@ export function handleMe(req, res) {
     });
 }
 
+export async function handleListSessions(req, res) {
+    const userId = req.user?.id;
+    if (!userId) return res.status(401).json({ error: "not authenticated" });
+    const result = await query(
+        `SELECT id, created_at, expires_at, last_seen_at, revoked_at
+         FROM sessions
+         WHERE user_id = $1
+         ORDER BY last_seen_at DESC`,
+        [userId]
+    );
+    return res.json({ sessions: result.rows });
+}
+
+export async function handleRevokeOtherSessions(req, res) {
+    const userId = req.user?.id;
+    if (!userId) return res.status(401).json({ error: "not authenticated" });
+    const currentToken = req.cookies?.[SESSION_COOKIE_NAME];
+    const currentHash = currentToken ? hashSessionToken(currentToken) : null;
+    if (!currentHash) return res.status(401).json({ error: "not authenticated" });
+
+    await query(
+        `UPDATE sessions
+         SET revoked_at = now()
+         WHERE user_id = $1
+           AND token_hash <> $2
+           AND revoked_at IS NULL`,
+        [userId, currentHash]
+    );
+    audit("auth.sessions.revoke_others", { user_id: userId, ip: req.ip });
+    return res.status(204).send();
+}
+
 router.post("/register", handleRegister);
 router.post("/login", loginLimiterByIp, loginLimiterByIdentifier, handleLogin);
 router.post("/password-reset/request", passwordResetLimiter, handlePasswordResetRequest);
@@ -602,6 +650,8 @@ router.post("/password/change", requireAuth, handleChangePassword);
 router.delete("/account", requireAuth, handleDeleteAccount);
 router.post("/logout", handleLogout);
 router.get("/me", requireAuth, handleMe);
+router.get("/sessions", requireAuth, handleListSessions);
+router.post("/sessions/revoke-others", requireAuth, handleRevokeOtherSessions);
 
 export const authHandlers = {
     register: handleRegister,

@@ -73,6 +73,8 @@
       <tr><td><span class="badge post">POST</span></td><td><code>/api/auth/email/verify/complete</code></td><td>Body: <code>{ token }</code>. Marks email verified.</td></tr>
       <tr><td><span class="badge post">POST</span></td><td><code>/api/auth/password/change</code></td><td>Requires session + CSRF. Body: <code>{ current_password, new_password }</code>. Revokes all sessions.</td></tr>
       <tr><td><span class="badge post">DELETE</span></td><td><code>/api/auth/account</code></td><td>Requires session + CSRF. Deletes account and sessions.</td></tr>
+      <tr><td><span class="badge get">GET</span></td><td><code>/api/auth/sessions</code></td><td>Requires session. Lists your sessions.</td></tr>
+      <tr><td><span class="badge post">POST</span></td><td><code>/api/auth/sessions/revoke-others</code></td><td>Requires session + CSRF. Revokes all other sessions.</td></tr>
     </tbody>
   </table>
 
@@ -97,6 +99,8 @@
       <tr><td><span class="badge get">GET</span></td><td><code>/health</code></td><td>Simple liveness check.</td></tr>
       <tr><td><span class="badge get">GET</span></td><td><code>/ready</code></td><td>Readiness check; pings database.</td></tr>
       <tr><td><span class="badge get">GET</span></td><td><code>/metrics</code></td><td>JSON snapshot of request/error counts and process stats (for quick debugging).</td></tr>
+      <tr><td><span class="badge get">GET</span></td><td><code>/api/admin/audit-log</code></td><td>Requires <code>admin</code> role. Query filters: <code>event</code>, <code>user_id</code>, <code>since</code>, <code>until</code>, <code>limit</code>, <code>offset</code>.</td></tr>
+      <tr><td><span class="badge get">GET</span></td><td><code>/api/config</code></td><td>Client-facing runtime config (session limits, rate limits) for adaptive UI.</td></tr>
     </tbody>
   </table>
 
@@ -116,6 +120,11 @@
     <li>Passwords hashed with bcrypt + pepper; password reset tokens hashed and single-use.</li>
     <li>Audit logs: JSON to stdout and <code>backend/audit.log</code> (configurable via <code>AUDIT_LOG_FILE</code>).</li>
   </ul>
+  <h2>Ops Panel</h2>
+  <div id="ops" style="background: var(--card); border: 1px solid var(--border); padding: 1rem; border-radius: 8px;">
+    <p id="ops-status" style="color: var(--muted); margin: 0 0 0.5rem 0;">Loading...</p>
+    <pre id="ops-data" style="background: #0f1a2f; border: 1px solid #14203a; padding: 0.75rem; border-radius: 6px; color: #cbd5e1; overflow: auto; max-height: 240px;"></pre>
+  </div>
   <script>
     (async () => {
       const link = document.getElementById("openapi-link");
@@ -155,6 +164,29 @@
 
       link.href = resolved;
       link.textContent = resolved;
+    })();
+
+    (async () => {
+      const origin = window.location.origin;
+      const base = origin.replace(/\/$/, "");
+      const statusEl = document.getElementById("ops-status");
+      const dataEl = document.getElementById("ops-data");
+      async function fetchJson(path) {
+        const res = await fetch(`${base}${path}`);
+        return res.ok ? res.json() : { error: `HTTP ${res.status}` };
+      }
+      try {
+        const [health, ready, metrics] = await Promise.all([
+          fetchJson("/health"),
+          fetchJson("/ready"),
+          fetchJson("/metrics")
+        ]);
+        statusEl.textContent = "Live snapshots:";
+        dataEl.textContent = JSON.stringify({ health, ready, metrics }, null, 2);
+      } catch (err) {
+        statusEl.textContent = "Failed to load ops data";
+        dataEl.textContent = String(err);
+      }
     })();
   </script>
 </body>

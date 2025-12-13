@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Swagger UI</title>
+  <title>logs-backend API Explorer</title>
   <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css">
-  <style>body { margin: 0; }</style>
+  <style>body { margin: 0; background: #0b1220; }</style>
 </head>
 <body>
   <div id="swagger-ui"></div>
@@ -35,6 +35,15 @@
           dom_id: "#swagger-ui",
           presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
           layout: "StandaloneLayout",
+          tagsSorter: (a, b) => {
+            const order = { auth: 1, admin: 2, ops: 3 };
+            const oa = order[a] || 99;
+            const ob = order[b] || 99;
+            if (oa !== ob) return oa - ob;
+            return a.localeCompare(b);
+          },
+          operationsSorter: "alpha",
+          docExpansion: "list",
           requestInterceptor: (req) => {
             // always include cookies (sid, csrf_token) for this origin
             req.credentials = "include";
@@ -47,6 +56,14 @@
               }
             }
             return req;
+          },
+          onComplete: () => {
+            // Expand tag groups to mirror docs sections
+            const tagsToOpen = ["auth", "admin", "ops"];
+            tagsToOpen.forEach((tag) => {
+              const el = document.querySelector(`.opblock-tag-section[data-tag='${tag}'] .opblock-tag`);
+              if (el && el.click) el.click();
+            });
           }
         });
       };

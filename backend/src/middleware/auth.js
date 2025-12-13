@@ -48,7 +48,7 @@ export async function requireAuth(req, res, next) {
             );
             return res.status(401).json({ error: "not authenticated" });
         }
-
+        // rolling renewal happens at login; here we just bump last_seen
         await query(`UPDATE sessions SET last_seen_at = now() WHERE token_hash = $1`, [tokenHash]);
 
         req.user = session;

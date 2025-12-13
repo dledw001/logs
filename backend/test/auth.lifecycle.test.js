@@ -68,6 +68,7 @@ describe("account lifecycle", () => {
     const meAfter = await agent.get("/api/auth/me");
     expect(meAfter.status).toBe(401); // session revoked
 
+    resetRateLimiters();
     const oldLogin = await agent.post("/api/auth/login").send({ identifier: USERNAME, password: PASSWORD });
     expect(oldLogin.status).toBe(401);
 
