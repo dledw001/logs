@@ -1,6 +1,6 @@
 import { agent } from "./helpers/auth.js";
 import { hashSessionToken } from "../src/auth/session.js";
-import { query, resetMemory } from "../src/db/db.js";
+import { query } from "../src/db/db.js";
 import { csrfProtection } from "../src/middleware/csrf.js";
 import { handleLogout, handleLogin, loginLimiterByIdentifier, loginLimiterByIp } from "../src/routes/auth.js";
 import { handleMetrics } from "../src/app.js";
@@ -9,9 +9,7 @@ afterAll(async () => {
     // nothing else to clean up; pool ended by other suites
 });
 
-beforeEach(() => {
-    resetMemory();
-});
+beforeEach(() => {});
 
 test("CSRF protection rejects missing token on unsafe route", async () => {
     const client = agent();
@@ -48,6 +46,10 @@ test("rate limiter blocks repeated login attempts", async () => {
 
 test("idle timeout revokes sessions after inactivity", async () => {
     const client = agent();
+    // cleanup in case previous runs left residue in Postgres
+    await query(`DELETE FROM user_roles WHERE user_id IN (SELECT id FROM users WHERE username = $1)`, ["idleuser"]);
+    await query(`DELETE FROM sessions WHERE user_id IN (SELECT id FROM users WHERE username = $1)`, ["idleuser"]);
+    await query(`DELETE FROM users WHERE username = $1`, ["idleuser"]);
 
     const reg = await client.register({ username: "idleuser", email: "idle@example.com", password: "Secur3Pass!" });
     expect(reg.statusCode).toBe(201);

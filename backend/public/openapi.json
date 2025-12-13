@@ -208,6 +208,71 @@
         }
       }
     },
+    "/api/admin/users": {
+      "get": {
+        "summary": "List all users (admin)",
+        "security": [{ "cookieAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "users": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/User" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Not authenticated" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/admin/users/{userId}/roles": {
+      "put": {
+        "summary": "Update user roles (admin)",
+        "security": [{ "cookieAuth": [] }],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "roles": { "type": "array", "items": { "type": "string" } }
+                },
+                "required": ["roles"]
+              },
+              "example": { "roles": ["admin", "user"] }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } }
+          },
+          "400": { "description": "Validation error", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
+          "401": { "description": "Not authenticated" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "User not found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+        }
+      }
+    },
     "/health": {
       "get": {
         "summary": "Healthcheck",

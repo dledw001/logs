@@ -1,4 +1,4 @@
-import { query, pool, resetMemory } from "../src/db/db.js";
+import { query, pool } from "../src/db/db.js";
 import { registerUser, agent } from "./helpers/auth.js";
 import { hashSessionToken } from "../src/auth/session.js";
 import { verifyPassword } from "../src/auth/password.js";
@@ -18,7 +18,6 @@ afterAll(async () => {
 });
 
 beforeEach(async () => {
-    resetMemory();
     client = agent();
 
     await query(

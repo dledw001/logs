@@ -1,10 +1,10 @@
 export function requireRole(roleName) {
     return function (req, res, next) {
         const roles = req.user?.roles || [];
-        if (!roles.includes(roleName)) {
-            return res.status(403).json({ error: "forbidden" });
+        if (req.user?.is_admin || roles.includes(roleName)) {
+            return next();
         }
-        return next();
+        return res.status(403).json({ error: "forbidden" });
     };
 }
 

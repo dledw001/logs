@@ -1,4 +1,4 @@
-import { query, pool, resetMemory } from "../src/db/db.js";
+import { query, pool } from "../src/db/db.js";
 import { agent, registerUser } from "./helpers/auth.js";
 
 const TEST_USERNAME = "testUser123";
@@ -19,7 +19,6 @@ afterAll(async () => {
 });
 
 beforeEach(async () => {
-    resetMemory();
     client = agent();
 
     // clean sessions first (FK cascade might handle it, but be explicit)

@@ -11,6 +11,7 @@
     "test": "AUDIT_LOG_CONSOLE=false npm run test:base",
     "test:verbose": "AUDIT_LOG_CONSOLE=true npm run test:base",
     "test:coverage": "AUDIT_LOG_CONSOLE=false node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand --coverage --coverageProvider=v8 --coverageDirectory=./coverage",
+    "admin:promote": "node scripts/promote-admin.js",
     "migrate:create": "node-pg-migrate create -m migrations",
     "migrate:up:dev": "node-pg-migrate up -m migrations -d DATABASE_URL",
     "migrate:down:dev": "node-pg-migrate down -m migrations -d DATABASE_URL",

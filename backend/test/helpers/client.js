@@ -199,6 +199,10 @@ export class TestClient {
         this._captureCookies(res.headers["set-cookie"]);
         return res;
     }
+
+    cookieHeader() {
+        return this._cookieHeader();
+    }
 }
 
 export function createClient() {

@@ -1,5 +1,5 @@
 import { agent, registerUser } from "./helpers/auth.js";
-import { query, pool, resetMemory } from "../src/db/db.js";
+import { query, pool } from "../src/db/db.js";
 import { requireAuth } from "../src/middleware/auth.js";
 import { requireRole } from "../src/auth/authorization.js";
 import { handleAdminPing } from "../src/routes/admin.js";
@@ -16,7 +16,6 @@ afterAll(async () => {
 });
 
 beforeEach(async () => {
-    resetMemory();
     await query(
         `DELETE FROM user_roles WHERE user_id IN (SELECT id FROM users WHERE username = $1)`,
         [USERNAME.toLowerCase()]

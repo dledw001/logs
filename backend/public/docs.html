@@ -79,6 +79,8 @@
     </thead>
     <tbody>
       <tr><td><span class="badge get">GET</span></td><td><code>/api/admin/ping</code></td><td>Requires <code>admin</code> role. Returns <code>{ ok: true }</code>.</td></tr>
+      <tr><td><span class="badge get">GET</span></td><td><code>/api/admin/users</code></td><td>Requires <code>admin</code> role. Lists all users with roles.</td></tr>
+      <tr><td><span class="badge post">PUT</span></td><td><code>/api/admin/users/:userId/roles</code></td><td>Requires <code>admin</code> role. Body: <code>{ roles: [\"admin\",\"user\"] }</code>. Updates target user's roles.</td></tr>
     </tbody>
   </table>
 
