@@ -20,6 +20,9 @@ export const up = (pgm) => {
 
         revoked_at: { type: "timestamptz" },
         last_seen_at: { type: "timestamptz", notNull: true, default: pgm.func("now()") },
+
+        user_agent: { type: "text" },
+        ip: { type: "text" },
     });
 
     pgm.createIndex("sessions", ["user_id"]);

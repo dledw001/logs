@@ -184,10 +184,41 @@
                           "created_at": { "type": "string", "format": "date-time" },
                           "expires_at": { "type": "string", "format": "date-time" },
                           "last_seen_at": { "type": "string", "format": "date-time" },
-                          "revoked_at": { "type": "string", "format": "date-time", "nullable": true }
+                          "revoked_at": { "type": "string", "format": "date-time", "nullable": true },
+                          "user_agent": { "type": "string" },
+                          "ip": { "type": "string" }
                         }
                       }
                     }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Not authenticated" }
+        }
+      }
+    },
+    "/api/auth/session": {
+      "get": {
+        "summary": "Current session",
+        "tags": ["auth"],
+        "security": [{ "cookieAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "integer" },
+                    "created_at": { "type": "string", "format": "date-time" },
+                    "expires_at": { "type": "string", "format": "date-time" },
+                    "last_seen_at": { "type": "string", "format": "date-time" },
+                    "revoked_at": { "type": "string", "format": "date-time", "nullable": true },
+                    "user_agent": { "type": "string" },
+                    "ip": { "type": "string" }
                   }
                 }
               }

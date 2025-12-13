@@ -57,7 +57,7 @@
   </ul>
 
   <h2>Auth Endpoints (<a id="openapi-link" href="/openapi.json">OpenAPI</a>)</h2>
-  <p style="color: var(--muted); margin-top: -0.25rem;">Prefer the interactive explorer? Open <a href="/swagger.html">Swagger UI</a>.</p>
+  <p style="color: var(--muted); margin-top: -0.25rem;">Prefer the interactive explorer? Open <a href="/swagger.html">Swagger UI</a>. Need a client? Use <code>/public/sdk.js</code> in the browser: <code>const api = createClient({ baseUrl: location.origin });</code>.</p>
   <table>
     <thead>
       <tr><th>Method</th><th>Path</th><th>Description</th></tr>
@@ -67,6 +67,7 @@
       <tr><td><span class="badge post">POST</span></td><td><code>/api/auth/login</code></td><td>Body: <code>{ identifier, password }</code> (identifier = username or email). On success sets HttpOnly <code>sid</code> + <code>csrf_token</code>, returns user.</td></tr>
       <tr><td><span class="badge post">POST</span></td><td><code>/api/auth/logout</code></td><td>Revokes session (idempotent) and clears cookie. Requires valid session + CSRF.</td></tr>
       <tr><td><span class="badge get">GET</span></td><td><code>/api/auth/me</code></td><td>Return current user. Requires session.</td></tr>
+      <tr><td><span class="badge get">GET</span></td><td><code>/api/auth/session</code></td><td>Return current session metadata (UA/IP/timestamps).</td></tr>
       <tr><td><span class="badge post">POST</span></td><td><code>/api/auth/password-reset/request</code></td><td>Body: <code>{ identifier }</code>. Issues reset token (returned only in non-prod). Rate-limited.</td></tr>
       <tr><td><span class="badge post">POST</span></td><td><code>/api/auth/password-reset/complete</code></td><td>Body: <code>{ token, password }</code>. Resets password, revokes sessions.</td></tr>
       <tr><td><span class="badge post">POST</span></td><td><code>/api/auth/email/verify/request</code></td><td>Requires session + CSRF. Issues email verification token (returned in non-prod).</td></tr>

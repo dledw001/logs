@@ -8,3 +8,7 @@ backend/database.json
 backend/.env
 backend/.env.local
 backend/.nvmrc
+backend/access.log
+backend/terraform.tfstate
+backend/terraform.tfstate.backup
+backend/.terraform/

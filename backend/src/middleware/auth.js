@@ -9,9 +9,12 @@ export async function requireAuth(req, res, next) {
         const tokenHash = hashSessionToken(token);
 
         const result = await query(
-            `SELECT s.user_id,
+            `SELECT s.id as session_id,
+                    s.user_id,
                     s.expires_at,
                     s.last_seen_at,
+                    s.ip as session_ip,
+                    s.user_agent as session_user_agent,
                     u.id,
                     u.username,
                     u.username_display,
@@ -27,7 +30,7 @@ export async function requireAuth(req, res, next) {
              WHERE s.token_hash = $1
                AND s.revoked_at IS NULL
              AND s.expires_at > now()
-             GROUP BY s.user_id, s.expires_at, s.last_seen_at, u.id, u.username, u.username_display, u.email, u.email_verified_at, u.is_admin, u.created_at`,
+             GROUP BY s.id, s.user_id, s.expires_at, s.last_seen_at, s.ip, s.user_agent, u.id, u.username, u.username_display, u.email, u.email_verified_at, u.is_admin, u.created_at`,
             [tokenHash]
         );
 

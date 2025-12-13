@@ -106,3 +106,23 @@ test("session listing and revoke others works", async () => {
     const me1 = await a1.me();
     expect(me1.statusCode).toBe(401);
 });
+
+test("current session endpoint returns metadata", async () => {
+    const httpAgent = request.agent(app);
+    await httpAgent
+        .post("/api/auth/register")
+        .send({ username: TEST_USERNAME, email: TEST_EMAIL, password: TEST_PASSWORD })
+        .set("User-Agent", "jest-session-test");
+
+    const login = await httpAgent
+        .post("/api/auth/login")
+        .set("User-Agent", "jest-session-test")
+        .send({ identifier: TEST_USERNAME, password: TEST_PASSWORD });
+    expect(login.status).toBe(200);
+
+    const meSession = await httpAgent.get("/api/auth/session");
+    expect(meSession.status).toBe(200);
+    expect(meSession.body).toHaveProperty("user_agent");
+    expect(String(meSession.body.user_agent)).toContain("jest-session-test");
+    expect(meSession.body).toHaveProperty("ip");
+});

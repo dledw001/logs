@@ -275,18 +275,18 @@ export async function handleLogin(req, res) {
 
         try {
             await query(
-                `INSERT INTO sessions (user_id, token_hash, expires_at)
-                 VALUES ($1, $2, $3)`,
-                [user.id, tokenHash, expiresAt]
+                `INSERT INTO sessions (user_id, token_hash, expires_at, user_agent, ip)
+                 VALUES ($1, $2, $3, $4, $5)`,
+                [user.id, tokenHash, expiresAt, req.get?.("user-agent") || "", req.ip || ""]
             );
         } catch (e) {
             if (e?.code !== "23505") throw e;
             token = generateSessionToken();
             tokenHash = hashSessionToken(token);
             await query(
-                `INSERT INTO sessions (user_id, token_hash, expires_at)
-                 VALUES ($1, $2, $3)`,
-                [user.id, tokenHash, expiresAt]
+                `INSERT INTO sessions (user_id, token_hash, expires_at, user_agent, ip)
+                 VALUES ($1, $2, $3, $4, $5)`,
+                [user.id, tokenHash, expiresAt, req.get?.("user-agent") || "", req.ip || ""]
             );
         }
 
@@ -612,13 +612,30 @@ export async function handleListSessions(req, res) {
     const userId = req.user?.id;
     if (!userId) return res.status(401).json({ error: "not authenticated" });
     const result = await query(
-        `SELECT id, created_at, expires_at, last_seen_at, revoked_at
+        `SELECT id, created_at, expires_at, last_seen_at, revoked_at, user_agent, ip
          FROM sessions
          WHERE user_id = $1
          ORDER BY last_seen_at DESC`,
         [userId]
     );
     return res.json({ sessions: result.rows });
+}
+
+export async function handleCurrentSession(req, res) {
+    const userId = req.user?.id;
+    if (!userId) return res.status(401).json({ error: "not authenticated" });
+    const token = req.cookies?.[SESSION_COOKIE_NAME];
+    const tokenHash = token ? hashSessionToken(token) : null;
+    if (!tokenHash) return res.status(401).json({ error: "not authenticated" });
+
+    const result = await query(
+        `SELECT id, created_at, expires_at, last_seen_at, revoked_at, user_agent, ip
+         FROM sessions
+         WHERE user_id = $1 AND token_hash = $2 AND revoked_at IS NULL`,
+        [userId, tokenHash]
+    );
+    if (result.rowCount === 0) return res.status(401).json({ error: "not authenticated" });
+    return res.json(result.rows[0]);
 }
 
 export async function handleRevokeOtherSessions(req, res) {
@@ -651,6 +668,7 @@ router.delete("/account", requireAuth, handleDeleteAccount);
 router.post("/logout", handleLogout);
 router.get("/me", requireAuth, handleMe);
 router.get("/sessions", requireAuth, handleListSessions);
+router.get("/session", requireAuth, handleCurrentSession);
 router.post("/sessions/revoke-others", requireAuth, handleRevokeOtherSessions);
 
 export const authHandlers = {
