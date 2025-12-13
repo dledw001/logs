@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>logs-backend SDK quick test</title>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; margin: 2rem; background: #0b1220; color: #e5e7eb; }
+    pre { background: #0f172a; padding: 1rem; border: 1px solid #1f2937; border-radius: 8px; overflow: auto; }
+    input, button { padding: 0.4rem 0.6rem; margin: 0.2rem; }
+    label { display: block; margin-top: 0.4rem; }
+  </style>
+</head>
+<body>
+  <h1>logs-backend SDK quick test</h1>
+  <p>Runs same-origin, so cookies work. Adjust fields and click Run.</p>
+  <div>
+    <label>Username <input id="u" value="alice" /></label>
+    <label>Email <input id="e" value="alice@example.com" /></label>
+    <label>Password <input id="p" value="password123" type="password" /></label>
+    <button id="run">Run flow</button>
+  </div>
+  <pre id="out"></pre>
+
+  <script type="module">
+    import { createClient } from "./sdk.js";
+    const api = createClient({ baseUrl: window.location.origin });
+    const out = document.getElementById("out");
+    const runBtn = document.getElementById("run");
+
+    const log = (msg, data) => {
+      out.textContent += `${msg}:\n${JSON.stringify(data, null, 2)}\n\n`;
+    };
+
+    runBtn.onclick = async () => {
+      out.textContent = "";
+      const username = document.getElementById("u").value;
+      const email = document.getElementById("e").value;
+      const password = document.getElementById("p").value;
+      try {
+        await api.register({ username, email, password });
+        log("register", "ok");
+
+        await api.login({ identifier: username, password });
+        log("login", "ok");
+
+        log("me", await api.me());
+        log("session", await api.session());
+        log("sessions", await api.sessions());
+
+        await api.revokeOtherSessions();
+        log("revokeOtherSessions", "ok");
+
+        await api.logout();
+        log("logout", "ok");
+      } catch (err) {
+        console.error(err);
+        log("error", err?.message || String(err));
+      }
+    };
+  </script>
+</body>
+</html>
