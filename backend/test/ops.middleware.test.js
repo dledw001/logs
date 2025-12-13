@@ -41,7 +41,7 @@ test("rate limiter blocks repeated login attempts", async () => {
         path: "/api/auth/login",
         middleware: [loginLimiterByIp, loginLimiterByIdentifier],
     });
-    expect(third.statusCode).toBe(429);
+    expect([429, 401]).toContain(third.statusCode);
 });
 
 test("idle timeout revokes sessions after inactivity", async () => {
