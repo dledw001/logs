@@ -30,9 +30,11 @@ const USERNAME_RE = /^[a-z0-9_.-]+$/;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const PASSWORD_RESET_TTL_MINUTES = 30;
+const EMAIL_VERIFY_TTL_MINUTES = 60 * 24;
 
 const SESSION_TTL_MS = SESSION_TTL_DAYS * 24 * 60 * 60 * 1000;
 const PASSWORD_RESET_TTL_MS = PASSWORD_RESET_TTL_MINUTES * 60 * 1000;
+const EMAIL_VERIFY_TTL_MS = EMAIL_VERIFY_TTL_MINUTES * 60 * 1000;
 
 const LOGIN_LIMIT_WINDOW_MS = Number(process.env.LOGIN_LIMIT_WINDOW_MS || 15 * 60 * 1000);
 const LOGIN_LIMIT_IP_MAX = Number(process.env.LOGIN_LIMIT_IP_MAX || 10);
@@ -151,10 +153,11 @@ function extractIdentifier(reqBody) {
 async function findUserByIdentifier(cleanIdentifier) {
     const whereClause = isLikelyEmail(cleanIdentifier) ? "email = $1" : "username = $1";
     const result = await query(
-        `SELECT u.id,
+         `SELECT u.id,
                 u.username,
                 u.username_display,
                 u.email,
+                u.email_verified_at,
                 u.password_hash,
                 u.is_admin,
                 u.created_at,
@@ -197,7 +200,7 @@ export async function handleRegister(req, res) {
         const result = await query(
             `INSERT INTO users (username, username_display, email, password_hash)
              VALUES ($1, $2, $3, $4)
-             RETURNING id, username, username_display, email, is_admin, created_at`,
+             RETURNING id, username, username_display, email, email_verified_at, is_admin, created_at`,
             [cleanUsername, displayUsername, cleanEmail, hashedPassword]
         );
 
@@ -223,6 +226,7 @@ export async function handleRegister(req, res) {
             username: user.username,
             username_display: user.username_display,
             email: user.email,
+            email_verified_at: user.email_verified_at,
             is_admin: user.is_admin,
             roles: ["user"],
             created_at: user.created_at,
@@ -296,6 +300,7 @@ export async function handleLogin(req, res) {
             username: user.username,
             username_display: user.username_display,
             email: user.email,
+            email_verified_at: user.email_verified_at,
             is_admin: user.is_admin,
             roles: Array.isArray(user.roles) ? user.roles : [],
             created_at: user.created_at,
@@ -420,6 +425,136 @@ export async function handlePasswordResetComplete(req, res) {
     }
 }
 
+export async function handleEmailVerifyRequest(req, res) {
+    const userId = req.user?.id;
+    if (!userId) return res.status(401).json({ error: "not authenticated" });
+    if (req.user.email_verified_at) return res.status(204).send();
+
+    try {
+        await query(`DELETE FROM email_verification_tokens WHERE user_id = $1`, [userId]);
+
+        const expiresAt = new Date(Date.now() + EMAIL_VERIFY_TTL_MS);
+        let token = generateSessionToken();
+        let tokenHash = hashSessionToken(token);
+        try {
+            await query(
+                `INSERT INTO email_verification_tokens (user_id, token_hash, expires_at)
+                 VALUES ($1, $2, $3)`,
+                [userId, tokenHash, expiresAt]
+            );
+        } catch (e) {
+            if (e?.code !== "23505") throw e;
+            token = generateSessionToken();
+            tokenHash = hashSessionToken(token);
+            await query(
+                `INSERT INTO email_verification_tokens (user_id, token_hash, expires_at)
+                 VALUES ($1, $2, $3)`,
+                [userId, tokenHash, expiresAt]
+            );
+        }
+
+        audit("auth.verify_email.request", { user_id: userId, email: req.user.email, ip: req.ip });
+
+        if (process.env.NODE_ENV !== "production") {
+            return res.status(200).json({ verify_token: token, expires_in_minutes: EMAIL_VERIFY_TTL_MINUTES });
+        }
+        return res.status(204).send();
+    } catch (err) {
+        console.error("POST /auth/email/verify/request error", err);
+        return res.status(500).json({ error: "internal server error" });
+    }
+}
+
+export async function handleEmailVerifyComplete(req, res) {
+    const tokenRaw = typeof req.body?.token === "string" ? req.body.token.trim() : "";
+    if (!tokenRaw) return res.status(400).json({ error: "token required" });
+
+    const tokenHash = hashSessionToken(tokenRaw);
+    try {
+        const tokenRes = await query(
+            `SELECT evt.id, evt.user_id, evt.expires_at, evt.used_at, u.email
+             FROM email_verification_tokens evt
+             JOIN users u ON u.id = evt.user_id
+             WHERE evt.token_hash = $1`,
+            [tokenHash]
+        );
+
+        if (
+            tokenRes.rowCount === 0 ||
+            tokenRes.rows[0].used_at ||
+            new Date(tokenRes.rows[0].expires_at) < new Date()
+        ) {
+            return res.status(400).json({ error: "invalid or expired token" });
+        }
+
+        const row = tokenRes.rows[0];
+        await query(`UPDATE email_verification_tokens SET used_at = now() WHERE id = $1`, [row.id]);
+        await query(`DELETE FROM email_verification_tokens WHERE user_id = $1 AND used_at IS NULL`, [row.user_id]);
+        await query(`UPDATE users SET email_verified_at = now() WHERE id = $1`, [row.user_id]);
+
+        audit("auth.verify_email.complete", { user_id: row.user_id, email: row.email, ip: req.ip });
+        return res.status(204).send();
+    } catch (err) {
+        console.error("POST /auth/email/verify/complete error", err);
+        return res.status(500).json({ error: "internal server error" });
+    }
+}
+
+export async function handleChangePassword(req, res) {
+    const userId = req.user?.id;
+    if (!userId) return res.status(401).json({ error: "not authenticated" });
+
+    const current = typeof req.body?.current_password === "string" ? req.body.current_password : "";
+    const nextPwd = typeof req.body?.new_password === "string" ? req.body.new_password : "";
+    if (!current || !nextPwd) {
+        return res.status(400).json({ error: "current_password and new_password required" });
+    }
+
+    try {
+        const userRes = await query(`SELECT password_hash, username, email FROM users WHERE id = $1`, [userId]);
+        if (userRes.rowCount === 0) return res.status(401).json({ error: "not authenticated" });
+
+        const ok = await verifyPassword(current, userRes.rows[0].password_hash);
+        if (!ok) return res.status(401).json({ error: "invalid current password" });
+
+        const cleanUsername = req.user.username;
+        const cleanEmail = req.user.email;
+        const err = validatePassword(nextPwd, cleanUsername, cleanEmail);
+        if (err) return res.status(400).json({ error: err });
+        if (nextPwd === current) return res.status(400).json({ error: "new password must differ from current" });
+
+        const hashed = await hashPassword(nextPwd);
+        await query(`UPDATE users SET password_hash = $1 WHERE id = $2`, [hashed, userId]);
+        await query(`UPDATE sessions SET revoked_at = now() WHERE user_id = $1 AND revoked_at IS NULL`, [userId]);
+
+        audit("auth.password.change", { user_id: userId, ip: req.ip });
+        return res.status(204).send();
+    } catch (err) {
+        console.error("POST /auth/password/change error", err);
+        return res.status(500).json({ error: "internal server error" });
+    }
+}
+
+export async function handleDeleteAccount(req, res) {
+    const userId = req.user?.id;
+    if (!userId) return res.status(401).json({ error: "not authenticated" });
+
+    try {
+        await query(`DELETE FROM sessions WHERE user_id = $1`, [userId]);
+        await query(`DELETE FROM email_verification_tokens WHERE user_id = $1`, [userId]);
+        await query(`DELETE FROM password_reset_tokens WHERE user_id = $1`, [userId]);
+        await query(`DELETE FROM user_roles WHERE user_id = $1`, [userId]);
+        await query(`DELETE FROM users WHERE id = $1`, [userId]);
+
+        audit("auth.account.delete", { user_id: userId, ip: req.ip });
+        res.clearCookie(SESSION_COOKIE_NAME, cookieOptions());
+        return res.status(204).send();
+    } catch (err) {
+        console.error("DELETE /auth/account error", err);
+        return res.status(500).json({ error: "internal server error" });
+    }
+}
+
 // Idempotent logout (OK to call even if not logged in)
 export async function handleLogout(req, res) {
     const token = req.cookies?.[SESSION_COOKIE_NAME];
@@ -450,6 +585,7 @@ export function handleMe(req, res) {
         username: req.user.username,
         username_display: req.user.username_display,
         email: req.user.email,
+        email_verified_at: req.user.email_verified_at,
         is_admin: req.user.is_admin,
         roles: Array.isArray(req.user.roles) ? req.user.roles : [],
         created_at: req.user.created_at,
@@ -460,6 +596,10 @@ router.post("/register", handleRegister);
 router.post("/login", loginLimiterByIp, loginLimiterByIdentifier, handleLogin);
 router.post("/password-reset/request", passwordResetLimiter, handlePasswordResetRequest);
 router.post("/password-reset/complete", handlePasswordResetComplete);
+router.post("/email/verify/request", requireAuth, handleEmailVerifyRequest);
+router.post("/email/verify/complete", handleEmailVerifyComplete);
+router.post("/password/change", requireAuth, handleChangePassword);
+router.delete("/account", requireAuth, handleDeleteAccount);
 router.post("/logout", handleLogout);
 router.get("/me", requireAuth, handleMe);
 
@@ -470,6 +610,10 @@ export const authHandlers = {
     me: handleMe,
     passwordResetRequest: handlePasswordResetRequest,
     passwordResetComplete: handlePasswordResetComplete,
+    emailVerifyRequest: handleEmailVerifyRequest,
+    emailVerifyComplete: handleEmailVerifyComplete,
+    changePassword: handleChangePassword,
+    deleteAccount: handleDeleteAccount,
 };
 
 export default router;

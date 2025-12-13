@@ -28,8 +28,11 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "helmet": "^8.0.0",
     "node-pg-migrate": "^8.0.4",
-    "pg": "^8.16.3"
+    "pg": "^8.16.3",
+    "pino": "^9.4.0",
+    "pino-http": "^9.0.0"
   },
   "devDependencies": {
     "jest": "^30.2.0",

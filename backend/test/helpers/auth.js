@@ -10,6 +10,10 @@ export async function registerUser(client, { username, email, password }, { clea
                 [cleanUsername]
             );
             await query(
+                `DELETE FROM email_verification_tokens WHERE user_id IN (SELECT id FROM users WHERE username = $1)`,
+                [cleanUsername]
+            );
+            await query(
                 `DELETE FROM sessions WHERE user_id IN (SELECT id FROM users WHERE username = $1)`,
                 [cleanUsername]
             );

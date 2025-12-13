@@ -1,3 +1,4 @@
+import { jest } from "@jest/globals";
 import { handleHealth, handleMetrics, handleDocs, handleOpenApi } from "../src/app.js";
 
 function makeRes() {
@@ -42,6 +43,10 @@ function makeRes() {
 }
 
 describe("top-level routes", () => {
+  afterEach(() => {
+    jest.resetModules();
+  });
+
   test("GET /health returns ok", async () => {
     const res = makeRes();
     handleHealth({}, res);
@@ -63,6 +68,30 @@ describe("top-level routes", () => {
     expect(res.statusCode).toBe(200);
     expect(res.headers["content-type"]).toMatch(/html/);
     expect(res.finished).toBe(true);
+  });
+
+  test("GET /ready returns ready when DB ok", async () => {
+    jest.unstable_mockModule("../src/db/db.js", () => ({
+      query: jest.fn().mockResolvedValue({ rows: [], rowCount: 0 }),
+      pool: { end: jest.fn() },
+    }));
+    const { handleReady } = await import(`../src/app.js?ready-ok=${Date.now()}`);
+    const res = makeRes();
+    await handleReady({}, res);
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toEqual({ service: "logs-backend", status: "ready" });
+  });
+
+  test("GET /ready returns 503 when DB fails", async () => {
+    jest.unstable_mockModule("../src/db/db.js", () => ({
+      query: jest.fn().mockRejectedValue(new Error("db down")),
+      pool: { end: jest.fn() },
+    }));
+    const { handleReady } = await import(`../src/app.js?ready-fail=${Date.now()}`);
+    const res = makeRes();
+    await handleReady({}, res);
+    expect(res.statusCode).toBe(503);
+    expect(res.body).toEqual({ service: "logs-backend", status: "degraded", error: "db_unreachable" });
   });
 
   test("GET /openapi.json serves spec", async () => {

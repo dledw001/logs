@@ -14,13 +14,14 @@ export async function handleAdminUsers(req, res) {
                 u.username,
                 u.username_display,
                 u.email,
+                u.email_verified_at,
                 u.is_admin,
                 u.created_at,
                 COALESCE(array_agg(r.name) FILTER (WHERE r.name IS NOT NULL), '{}') AS roles
          FROM users u
          LEFT JOIN user_roles ur ON ur.user_id = u.id
          LEFT JOIN roles r ON r.id = ur.role_id
-         GROUP BY u.id, u.username, u.username_display, u.email, u.is_admin, u.created_at
+         GROUP BY u.id, u.username, u.username_display, u.email, u.email_verified_at, u.is_admin, u.created_at
          ORDER BY u.id ASC`
     );
     audit("admin.users.list", { user_id: req.user.id, count: result.rowCount, ip: req.ip });

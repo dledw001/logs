@@ -69,6 +69,10 @@
       <tr><td><span class="badge get">GET</span></td><td><code>/api/auth/me</code></td><td>Return current user. Requires session.</td></tr>
       <tr><td><span class="badge post">POST</span></td><td><code>/api/auth/password-reset/request</code></td><td>Body: <code>{ identifier }</code>. Issues reset token (returned only in non-prod). Rate-limited.</td></tr>
       <tr><td><span class="badge post">POST</span></td><td><code>/api/auth/password-reset/complete</code></td><td>Body: <code>{ token, password }</code>. Resets password, revokes sessions.</td></tr>
+      <tr><td><span class="badge post">POST</span></td><td><code>/api/auth/email/verify/request</code></td><td>Requires session + CSRF. Issues email verification token (returned in non-prod).</td></tr>
+      <tr><td><span class="badge post">POST</span></td><td><code>/api/auth/email/verify/complete</code></td><td>Body: <code>{ token }</code>. Marks email verified.</td></tr>
+      <tr><td><span class="badge post">POST</span></td><td><code>/api/auth/password/change</code></td><td>Requires session + CSRF. Body: <code>{ current_password, new_password }</code>. Revokes all sessions.</td></tr>
+      <tr><td><span class="badge post">DELETE</span></td><td><code>/api/auth/account</code></td><td>Requires session + CSRF. Deletes account and sessions.</td></tr>
     </tbody>
   </table>
 
@@ -91,6 +95,7 @@
     </thead>
     <tbody>
       <tr><td><span class="badge get">GET</span></td><td><code>/health</code></td><td>Simple liveness check.</td></tr>
+      <tr><td><span class="badge get">GET</span></td><td><code>/ready</code></td><td>Readiness check; pings database.</td></tr>
       <tr><td><span class="badge get">GET</span></td><td><code>/metrics</code></td><td>JSON snapshot of request/error counts and process stats (for quick debugging).</td></tr>
     </tbody>
   </table>

@@ -1,0 +1,10 @@
+.idea/
+node_modules/
+.env
+backend/node_modules/
+backend/coverage/
+backend/audit.log
+backend/database.json
+backend/.env
+backend/.env.local
+backend/.nvmrc

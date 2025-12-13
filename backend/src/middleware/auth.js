@@ -16,6 +16,7 @@ export async function requireAuth(req, res, next) {
                     u.username,
                     u.username_display,
                     u.email,
+                    u.email_verified_at,
                     u.is_admin,
                     u.created_at,
                     COALESCE(array_agg(r.name) FILTER (WHERE r.name IS NOT NULL), '{}') AS roles
@@ -25,8 +26,8 @@ export async function requireAuth(req, res, next) {
              LEFT JOIN roles r ON r.id = ur.role_id
              WHERE s.token_hash = $1
                AND s.revoked_at IS NULL
-               AND s.expires_at > now()
-             GROUP BY s.user_id, s.expires_at, s.last_seen_at, u.id, u.username, u.username_display, u.email, u.is_admin, u.created_at`,
+             AND s.expires_at > now()
+             GROUP BY s.user_id, s.expires_at, s.last_seen_at, u.id, u.username, u.username_display, u.email, u.email_verified_at, u.is_admin, u.created_at`,
             [tokenHash]
         );
 

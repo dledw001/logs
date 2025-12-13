@@ -5,6 +5,8 @@ function defaultKey(req) {
     return req.ip || req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || "unknown";
 }
 
+const limiterStates = [];
+
 export function createRateLimiter({
     windowMs,
     max,
@@ -13,6 +15,7 @@ export function createRateLimiter({
     name = "rate-limit",
 } = {}) {
     const attempts = new Map();
+    limiterStates.push(attempts);
 
     function prune(key) {
         const entry = attempts.get(key);
@@ -52,4 +55,10 @@ export function createRateLimiter({
 
         return next();
     };
+}
+
+export function resetRateLimiters() {
+    for (const map of limiterStates) {
+        map.clear();
+    }
 }
