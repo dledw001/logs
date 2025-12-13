@@ -1,12 +1,10 @@
 import { Router } from 'express';
+import authRoutes from './auth.js';
+import adminRoutes from './admin.js';
 
 const router = Router();
 
-router.get('/logs', (req, res) => {
-    res.json([
-        { id: 1, message: 'log entry 1' },
-        { id: 2, message: 'log entry 2' },
-    ]);
-});
+router.use('/auth', authRoutes);
+router.use('/admin', adminRoutes);
 
 export default router;

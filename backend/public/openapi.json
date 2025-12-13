@@ -1,0 +1,224 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "logs-backend API",
+    "version": "1.0.0",
+    "description": "Authentication-first template with sessions, CSRF, rate limiting, roles, and password reset."
+  },
+  "servers": [
+    { "url": "http://localhost:4000" }
+  ],
+  "components": {
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "sid"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "username": { "type": "string" },
+          "username_display": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "is_admin": { "type": "boolean" },
+          "roles": { "type": "array", "items": { "type": "string" } },
+          "created_at": { "type": "string", "format": "date-time" }
+        },
+        "required": ["id", "username", "email", "is_admin"],
+        "example": {
+          "id": 1,
+          "username": "alice",
+          "username_display": "alice",
+          "email": "alice@example.com",
+          "is_admin": false,
+          "roles": ["user"],
+          "created_at": "2025-01-01T00:00:00.000Z"
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": { "type": "string" }
+        },
+        "example": { "error": "password must be 8-128 characters" }
+      }
+    }
+  },
+  "paths": {
+    "/api/auth/register": {
+      "post": {
+        "summary": "Register user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["username", "email", "password"],
+                "properties": {
+                  "username": { "type": "string" },
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string", "format": "password" }
+                }
+              },
+              "example": {
+                "username": "alice",
+                "email": "alice@example.com",
+                "password": "password123"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Created", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } } },
+          "400": {
+            "description": "Validation error",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" }, "examples": { "too_short": { "summary": "Password too short", "value": { "error": "password must be 8-128 characters" } } } } }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" }, "examples": { "username": { "summary": "Username taken", "value": { "error": "username already taken" } }, "email": { "summary": "Email used", "value": { "error": "email already used" } } } } }
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "summary": "Login",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["password"],
+                "properties": {
+                  "identifier": { "type": "string" },
+                  "username": { "type": "string" },
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string", "format": "password" }
+                }
+              },
+              "example": {
+                "identifier": "alice",
+                "password": "password123"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } } },
+          "400": { "description": "Validation error", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
+          "401": { "description": "Invalid credentials", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
+          "429": { "description": "Rate limit", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "summary": "Logout",
+        "security": [{ "cookieAuth": [] }],
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": false,
+            "schema": { "type": "string" },
+            "description": "CSRF token; copy the value of the csrf_token cookie set on login."
+          }
+        ],
+        "responses": {
+          "204": { "description": "No Content" },
+          "403": {
+            "description": "CSRF failed",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" },
+                "example": { "error": "invalid CSRF token" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "summary": "Current user",
+        "security": [{ "cookieAuth": [] }],
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } } },
+          "401": { "description": "Not authenticated", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+        }
+      }
+    },
+    "/api/auth/password-reset/request": {
+      "post": {
+        "summary": "Request password reset",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "type": "object", "required": ["identifier"], "properties": { "identifier": { "type": "string" } } }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Token (non-prod only)" },
+          "204": { "description": "No Content (prod, or user not found)" },
+          "429": { "description": "Rate limit", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+        }
+      }
+    },
+    "/api/auth/password-reset/complete": {
+      "post": {
+        "summary": "Complete password reset",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["token", "password"],
+                "properties": {
+                  "token": { "type": "string" },
+                  "password": { "type": "string", "format": "password" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": { "description": "Password updated" },
+          "400": { "description": "Invalid token or password", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+        }
+      }
+    },
+    "/api/admin/ping": {
+      "get": {
+        "summary": "Admin ping",
+        "security": [{ "cookieAuth": [] }],
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "type": "object", "properties": { "ok": { "type": "boolean" } } } } } },
+          "401": { "description": "Not authenticated" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Healthcheck",
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/metrics": {
+      "get": {
+        "summary": "Metrics",
+        "responses": { "200": { "description": "OK" } }
+      }
+    }
+  }
+}

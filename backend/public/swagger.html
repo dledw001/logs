@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Swagger UI</title>
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css">
+  <style>body { margin: 0; }</style>
+</head>
+<body>
+  <div id="swagger-ui"></div>
+  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js" crossorigin></script>
+  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-standalone-preset.js" crossorigin></script>
+  <script>
+    (() => {
+      const backendParam = new URLSearchParams(window.location.search).get("backend");
+      const origin = window.location.origin;
+      let base;
+      if (backendParam) {
+        base = backendParam;
+      } else if (/:(4000)(\/|$)/.test(origin)) {
+        base = origin;
+      } else {
+        base = "http://localhost:4000";
+      }
+      if (base === "file://") base = "http://localhost:4000";
+      const specUrl = `${base.replace(/\/$/, "")}/openapi.json`;
+      window.onload = () => {
+        const getCookie = (name) => {
+          const m = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+          return m ? decodeURIComponent(m[2]) : "";
+        };
+        window.ui = SwaggerUIBundle({
+          url: specUrl,
+          dom_id: "#swagger-ui",
+          presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
+          layout: "StandaloneLayout",
+          requestInterceptor: (req) => {
+            // always include cookies (sid, csrf_token) for this origin
+            req.credentials = "include";
+            const method = (req.method || "GET").toUpperCase();
+            if (!["GET", "HEAD", "OPTIONS"].includes(method)) {
+              // auto-attach CSRF token from cookie if present
+              const csrf = getCookie("csrf_token");
+              if (csrf && !req.headers["x-csrf-token"]) {
+                req.headers["x-csrf-token"] = csrf;
+              }
+            }
+            return req;
+          }
+        });
+      };
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "defaultEnv": "dev",
+  "dev": {
+    "connectionString": "postgresql://logs_user:logs_password@localhost:5432/logs_dev"
+  },
+  "test": {
+    "connectionString": "postgresql://logs_user:logs_password@localhost:5432/logs_test"
+  }
+}

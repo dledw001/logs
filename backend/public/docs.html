@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>logs-backend API Docs</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b1220;
+      --panel: #0f172a;
+      --card: #111927;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #38bdf8;
+      --border: #1f2937;
+      --badge-get-bg: rgba(16, 185, 129, 0.15);
+      --badge-get-text: #34d399;
+      --badge-post-bg: rgba(59, 130, 246, 0.15);
+      --badge-post-text: #60a5fa;
+    }
+    body {
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+      margin: 2rem auto;
+      max-width: 960px;
+      line-height: 1.7;
+      color: var(--text);
+      background: radial-gradient(120% 120% at 20% 20%, rgba(56,189,248,0.08), transparent 50%), radial-gradient(120% 120% at 80% 0%, rgba(94,234,212,0.08), transparent 50%), var(--bg);
+    }
+    code, pre { font-family: "SFMono-Regular", Consolas, Menlo, monospace; background: #0f1a2f; padding: 0.1rem 0.35rem; border-radius: 4px; color: #cbd5e1; border: 1px solid #14203a; }
+    h1, h2, h3 { color: #f8fafc; margin-top: 1.5rem; }
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.35rem; }
+    h3 { font-size: 1.1rem; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0; background: var(--card); border: 1px solid var(--border); }
+    th, td { border: 1px solid var(--border); padding: 0.65rem; text-align: left; }
+    th { background: #111b30; color: #cbd5e1; }
+    .badge { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 999px; font-size: 0.8rem; letter-spacing: 0.01em; border: 1px solid var(--border); }
+    .get { background: var(--badge-get-bg); color: var(--badge-get-text); }
+    .post { background: var(--badge-post-bg); color: var(--badge-post-text); }
+    ul { padding-left: 1.1rem; }
+    li { margin: 0.25rem 0; color: var(--muted); }
+    a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <h1>logs-backend API</h1>
+  <p>Opinionated auth-first template. All responses are JSON. Auth uses HttpOnly cookie <code>sid</code> with hashed token in DB.</p>
+
+  <h2>Environment</h2>
+  <ul>
+    <li><strong>Base URL:</strong> <code>/api</code></li>
+    <li><strong>CSRF:</strong> Double-submit cookie <code>csrf_token</code> + header <code>x-csrf-token</code> required for unsafe methods (login/register/reset are exempt to allow bootstrap).</li>
+    <li><strong>Rate limits:</strong> Login per-IP and per-identifier (configurable via env); password reset requests limited per identifier/IP.</li>
+    <li><strong>Sessions:</strong> 7-day absolute TTL, 30-minute idle timeout, revoked on logout and password reset.</li>
+    <li><strong>Roles:</strong> Default roles <code>user</code>, <code>admin</code>; users get <code>user</code> at registration.</li>
+  </ul>
+
+  <h2>Auth Endpoints (<a id="openapi-link" href="/openapi.json">OpenAPI</a>)</h2>
+  <p style="color: var(--muted); margin-top: -0.25rem;">Prefer the interactive explorer? Open <a href="/swagger.html">Swagger UI</a>.</p>
+  <table>
+    <thead>
+      <tr><th>Method</th><th>Path</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="badge post">POST</span></td><td><code>/api/auth/register</code></td><td>Create user. Body: <code>{ username, email, password }</code>. Returns user (no secrets). Sets no session.</td></tr>
+      <tr><td><span class="badge post">POST</span></td><td><code>/api/auth/login</code></td><td>Body: <code>{ identifier, password }</code> (identifier = username or email). On success sets HttpOnly <code>sid</code> + <code>csrf_token</code>, returns user.</td></tr>
+      <tr><td><span class="badge post">POST</span></td><td><code>/api/auth/logout</code></td><td>Revokes session (idempotent) and clears cookie. Requires valid session + CSRF.</td></tr>
+      <tr><td><span class="badge get">GET</span></td><td><code>/api/auth/me</code></td><td>Return current user. Requires session.</td></tr>
+      <tr><td><span class="badge post">POST</span></td><td><code>/api/auth/password-reset/request</code></td><td>Body: <code>{ identifier }</code>. Issues reset token (returned only in non-prod). Rate-limited.</td></tr>
+      <tr><td><span class="badge post">POST</span></td><td><code>/api/auth/password-reset/complete</code></td><td>Body: <code>{ token, password }</code>. Resets password, revokes sessions.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Admin Endpoints</h2>
+  <table>
+    <thead>
+      <tr><th>Method</th><th>Path</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="badge get">GET</span></td><td><code>/api/admin/ping</code></td><td>Requires <code>admin</code> role. Returns <code>{ ok: true }</code>.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Operational Endpoints</h2>
+  <table>
+    <thead>
+      <tr><th>Method</th><th>Path</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="badge get">GET</span></td><td><code>/health</code></td><td>Simple liveness check.</td></tr>
+      <tr><td><span class="badge get">GET</span></td><td><code>/metrics</code></td><td>JSON snapshot of request/error counts and process stats (for quick debugging).</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Errors</h2>
+  <ul>
+    <li>Validation errors: <code>400</code> with <code>{ error }</code>.</li>
+    <li>Auth failures: <code>401</code> (<code>not authenticated</code> / <code>invalid credentials</code>).</li>
+    <li>Forbidden: <code>403</code> for CSRF failures or missing role.</li>
+    <li>Conflict: <code>409</code> for duplicate username/email.</li>
+    <li>Rate limit: <code>429</code> with <code>Retry-After</code> header.</li>
+    <li>Server errors: <code>500</code> with <code>{ error: "internal server error", request_id }</code>; details in logs.</li>
+  </ul>
+
+  <h2>Security Notes</h2>
+  <ul>
+    <li>Session cookies are HttpOnly, SameSite=Lax, Secure in production.</li>
+    <li>Passwords hashed with bcrypt + pepper; password reset tokens hashed and single-use.</li>
+    <li>Audit logs: JSON to stdout and <code>backend/audit.log</code> (configurable via <code>AUDIT_LOG_FILE</code>).</li>
+  </ul>
+  <script>
+    (async () => {
+      const link = document.getElementById("openapi-link");
+      if (!link) return;
+      const urlParam = new URLSearchParams(window.location.search).get("backend");
+      const candidates = [];
+      const origin = window.location.origin;
+      if (urlParam) candidates.push(urlParam);
+      candidates.push(origin);
+      candidates.push("http://localhost:4000");
+
+      const tryResolve = async (base) => {
+        const normalized = `${base.replace(/\/$/, "")}/openapi.json`;
+        try {
+          const res = await fetch(normalized, { method: "HEAD" });
+          if (res.ok) return normalized;
+        } catch (_err) {}
+        return null;
+      };
+
+      let resolved = null;
+      // First, see if the file sits right next to the docs (static hosting)
+      resolved = await tryResolve(".");
+      if (!resolved) {
+        for (const candidate of candidates) {
+          if (!candidate || candidate === "file://") continue;
+          // Avoid repeated work
+          if (resolved) break;
+          const next = await tryResolve(candidate);
+          if (next) resolved = next;
+        }
+      }
+
+      if (!resolved) {
+        resolved = `${origin.replace(/\/$/, "")}/openapi.json`;
+      }
+
+      link.href = resolved;
+      link.textContent = resolved;
+    })();
+  </script>
+</body>
+</html>
