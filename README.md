@@ -1,6 +1,6 @@
 # logs-backend (auth-first starter)
 
-Opinionated Node/Express auth/ops starter with sessions, CSRF, rate limits, roles, audit logging, OpenAPI docs, and a minimal browser SDK.
+Opinionated Node/Express auth/ops starter with sessions, CSRF, rate limits, roles, audit logging, OpenAPI docs, and a minimal browser SDK. Includes a Next.js UI shell under `frontend/` for trying the API.
 
 ## Quick start
 ```bash
@@ -17,6 +17,7 @@ Endpoints:
 - Swagger: http://localhost:4000/swagger.html
 - SDK demo (same-origin): http://localhost:4000/sdk-test.html
 - OpenAPI: http://localhost:4000/openapi.json
+- Next UI: http://localhost:3000 (after running `npm run dev` in `frontend/`)
 
 ## Common scripts
 From `backend/`:
@@ -24,6 +25,10 @@ From `backend/`:
 - `npm run test` / `npm run test:coverage`
 - `npm run migrate:up:dev` / `npm run migrate:up:test`
 - `npm run wipe:db` – **danger** wipe dev/test DBs
+
+From `frontend/` (Next.js):
+- `npm run dev` / `npm run build` / `npm run start`
+- Copy `.env.local.example` to `.env.local` to point the proxy at your backend (defaults to http://localhost:4000).
 
 ## Adding a route
 1. Create a file in `src/routes/` (e.g., `hello.js`), export an Express router.

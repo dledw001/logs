@@ -12,3 +12,9 @@ backend/access.log
 backend/terraform.tfstate
 backend/terraform.tfstate.backup
 backend/.terraform/
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
