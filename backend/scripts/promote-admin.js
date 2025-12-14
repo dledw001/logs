@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 dotenv.config({ quiet: true });
 
 import { query, pool } from "../src/db/db.js";
-import { audit } from "../src/logger/audit.js";
+import { auditAndWait } from "../src/logger/audit.js";
 
 async function main() {
   const email = process.argv.find((arg) => arg.startsWith("--email="))?.split("=")[1];
@@ -44,7 +44,12 @@ async function main() {
   );
   await query(`UPDATE users SET is_admin = TRUE WHERE id = $1`, [user.id]);
 
-  audit("admin.promote", { actor: "script", user_id: user.id, username: user.username, email: user.email });
+  await auditAndWait("admin.promote", {
+    actor: "script",
+    user_id: user.id,
+    username: user.username,
+    email: user.email,
+  });
   console.log(`Promoted user ${user.username} (${user.email}) to admin.`);
 }
 

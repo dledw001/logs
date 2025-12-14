@@ -5,9 +5,8 @@ const fsPromise = import("node:fs/promises");
 const AUDIT_DB_ENABLED =
     process.env.AUDIT_DB_ENABLED !== undefined
         ? process.env.AUDIT_DB_ENABLED !== "false"
-        : process.env.NODE_ENV === "test"
-            ? false
-            : true;
+        : true;
+const ALLOW_DB_IN_TEST = process.env.AUDIT_DB_ENABLED === "true";
 
 const AUDIT_ENABLED = process.env.AUDIT_LOG_ENABLED !== "false";
 const AUDIT_LOG_CONSOLE = process.env.AUDIT_LOG_CONSOLE === "true";
@@ -69,21 +68,38 @@ async function renameIfNeeded(force = false) {
 
 export function audit(event, meta = {}) {
     if (!AUDIT_ENABLED) return;
-    const cleaned = cleanMeta(meta);
-    const payload = {
-        ts: new Date().toISOString(),
-        event,
-        ...cleaned,
-    };
+    const payload = buildPayload(event, meta);
     const line = JSON.stringify(payload);
     if (AUDIT_LOG_CONSOLE) {
         console.log(line);
     }
     // fire-and-forget write
     void writeToFile(line);
-    if (AUDIT_DB_ENABLED) {
+    if (AUDIT_DB_ENABLED && (process.env.NODE_ENV !== "test" || ALLOW_DB_IN_TEST)) {
         void writeToDb(event, payload);
     }
+}
+
+export async function auditAndWait(event, meta = {}) {
+    if (!AUDIT_ENABLED) return;
+    const payload = buildPayload(event, meta);
+    const line = JSON.stringify(payload);
+    if (AUDIT_LOG_CONSOLE) {
+        console.log(line);
+    }
+    await writeToFile(line);
+    if (AUDIT_DB_ENABLED && (process.env.NODE_ENV !== "test" || ALLOW_DB_IN_TEST)) {
+        await writeToDb(event, payload);
+    }
+}
+
+function buildPayload(event, meta) {
+    const cleaned = cleanMeta(meta);
+    return {
+        ts: new Date().toISOString(),
+        event,
+        ...cleaned,
+    };
 }
 
 async function writeToDb(event, payload) {

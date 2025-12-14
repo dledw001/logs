@@ -1,16 +1,16 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import { callApi } from "../../lib/api";
 
 export default function ForgotPasswordPage() {
   const [identifier, setIdentifier] = useState("");
   const [token, setToken] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [statusReq, setStatusReq] = useState<string | null>(null);
-  const [statusComplete, setStatusComplete] = useState<string | null>(null);
+  const [statusReq, setStatusReq] = useState(null);
+  const [statusComplete, setStatusComplete] = useState(null);
 
-  const submitRequest = async (e: FormEvent) => {
+  const submitRequest = async (e) => {
     e.preventDefault();
     setStatusReq("Requesting reset...");
     const res = await callApi("/api/auth/password-reset/request", {
@@ -20,7 +20,7 @@ export default function ForgotPasswordPage() {
     setStatusReq(`Response (${res.status}): ${JSON.stringify(res.data)}`);
   };
 
-  const submitComplete = async (e: FormEvent) => {
+  const submitComplete = async (e) => {
     e.preventDefault();
     setStatusComplete("Submitting new password...");
     const res = await callApi("/api/auth/password-reset/complete", {

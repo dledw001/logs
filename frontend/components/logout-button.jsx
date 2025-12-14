@@ -1,8 +1,6 @@
 "use client";
 
-type Props = { csrf: string };
-
-export default function LogoutButton({ csrf }: Props) {
+export default function LogoutButton({ csrf }) {
   const handle = async () => {
     try {
       await fetch("/api/auth/logout", {

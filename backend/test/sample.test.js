@@ -4,6 +4,11 @@ import { query } from "../src/db/db.js";
 
 describe("sample route", () => {
   test("requires auth and policy", async () => {
+    await query(`DELETE FROM user_roles WHERE user_id IN (SELECT id FROM users WHERE username = $1)`, [
+      "betauser",
+    ]);
+    await query(`DELETE FROM users WHERE username = $1`, ["betauser"]);
+
     const agent = request.agent(app);
     const reg = await agent
       .post("/api/auth/register")

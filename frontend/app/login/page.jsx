@@ -1,16 +1,16 @@
 "use client";
 
-import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { apiHint, callApi } from "../../lib/api";
 
 export default function LoginPage() {
   const router = useRouter();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
-  const [status, setStatus] = useState<string | null>(null);
+  const [status, setStatus] = useState(null);
 
-  const submit = async (e: FormEvent) => {
+  const submit = async (e) => {
     e.preventDefault();
     setStatus("Signing in...");
     const res = await callApi("/api/auth/login", {
@@ -32,6 +32,7 @@ export default function LoginPage() {
           <div className="card bg-body-tertiary border border-secondary-subtle">
             <div className="card-body">
               <h1 className="h4 mb-2">Login</h1>
+              <p className="text-secondary mb-4 small">API target: {apiHint()}</p>
               <form className="vstack gap-3" onSubmit={submit}>
                 <div>
                   <input
@@ -65,7 +66,7 @@ export default function LoginPage() {
             <div className="card-body d-flex align-items-center justify-content-between">
               <span className="text-secondary small">Need an account?</span>
               <button className="btn btn-outline-light btn-sm" onClick={() => router.push("/register")}>
-                Register
+                Go to register
               </button>
             </div>
           </div>

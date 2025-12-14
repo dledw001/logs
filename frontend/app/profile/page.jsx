@@ -4,26 +4,16 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { callApi } from "../../lib/api";
 
-type Me = {
-  id: number;
-  username: string;
-  username_display: string;
-  email: string;
-  email_verified_at: string | null;
-  roles: string[];
-  created_at: string;
-};
-
 export default function ProfilePage() {
   const router = useRouter();
-  const [me, setMe] = useState<Me | null>(null);
-  const [status, setStatus] = useState<string | null>(null);
+  const [me, setMe] = useState(null);
+  const [status, setStatus] = useState(null);
 
   useEffect(() => {
     (async () => {
       const res = await callApi("/api/auth/me");
       if (res.status === 200 && res.data && typeof res.data === "object") {
-        setMe(res.data as Me);
+        setMe(res.data);
       } else {
         setStatus("Not authenticated");
         router.push("/login");

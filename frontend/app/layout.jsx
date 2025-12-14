@@ -1,18 +1,16 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./globals.css";
-import type { Metadata } from "next";
-import { cookies } from "next/headers";
 import Link from "next/link";
-import LogoutButton from "../components/logout-button";
+import { cookies } from "next/headers";
 
-export const metadata: Metadata = {
+export const dynamic = "force-dynamic";
+
+export const metadata = {
   title: "Auth Starter UI",
   description: "Next.js frontend shell for the auth-first backend"
 };
 
-export const dynamic = "force-dynamic";
-
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }) {
   const store = await cookies();
   const isAuthed = store.has("sid");
   const csrf = store.get("csrf_token")?.value ?? "";
@@ -71,5 +69,25 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <div className="container py-4">{children}</div>
       </body>
     </html>
+  );
+}
+
+function LogoutButton({ csrf }) {
+  if (typeof window === "undefined") return null;
+  const handle = async () => {
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+        headers: csrf ? { "x-csrf-token": csrf } : {}
+      });
+    } finally {
+      window.location.href = "/login";
+    }
+  };
+  return (
+    <button className="btn btn-outline-light btn-sm" type="button" onClick={handle}>
+      Logout
+    </button>
   );
 }

@@ -4,36 +4,18 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { apiHint, callApi } from "../../lib/api";
 
-type Me = {
-  id: number;
-  username: string;
-  username_display: string;
-  email: string;
-  roles: string[];
-};
-
-type Session = {
-  id: number;
-  created_at: string;
-  expires_at: string;
-  last_seen_at: string;
-  revoked_at?: string | null;
-  user_agent?: string;
-  ip?: string;
-};
-
 export default function HomePage() {
   const router = useRouter();
-  const [me, setMe] = useState<Me | null>(null);
-  const [sessions, setSessions] = useState<Session[]>([]);
-  const [status, setStatus] = useState<string | null>(null);
+  const [me, setMe] = useState(null);
+  const [sessions, setSessions] = useState([]);
+  const [status, setStatus] = useState(null);
   const [showRevoked, setShowRevoked] = useState(false);
 
   useEffect(() => {
     (async () => {
       const res = await callApi("/api/auth/me");
       if (res.status === 200 && res.data && typeof res.data === "object") {
-        setMe(res.data as Me);
+        setMe(res.data);
       } else {
         setStatus("Not logged in");
       }
@@ -44,7 +26,7 @@ export default function HomePage() {
     setStatus("Loading sessions...");
     const res = await callApi("/api/auth/sessions");
     if (res.status === 200 && res.data && typeof res.data === "object") {
-      const data = res.data as { sessions: Session[] };
+      const data = res.data;
       setSessions(data.sessions || []);
       setStatus("Sessions loaded");
     } else {
@@ -54,7 +36,7 @@ export default function HomePage() {
 
   const logout = async () => {
     await callApi("/api/auth/logout", { method: "POST" });
-    router.push("/login");
+    window.location.href = "/login";
   };
 
   const filteredSessions = showRevoked ? sessions : sessions.filter((s) => !s.revoked_at);
@@ -87,6 +69,7 @@ export default function HomePage() {
               <div className="d-flex justify-content-between align-items-start gap-2">
                 <div>
                   <h1 className="h4 mb-1">Welcome</h1>
+                  <p className="text-secondary small mb-0">API target: {apiHint()}</p>
                 </div>
                 <button className="btn btn-outline-light btn-sm" onClick={logout}>
                   Logout
@@ -113,6 +96,11 @@ export default function HomePage() {
                 <button className="btn btn-outline-light btn-sm" onClick={() => router.push("/docs")}>
                   View docs
                 </button>
+                {me?.is_admin && (
+                  <button className="btn btn-outline-light btn-sm" onClick={() => router.push("/admin")}>
+                    Admin console
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -122,17 +110,17 @@ export default function HomePage() {
             <div className="card-body d-flex flex-column gap-3">
               <div className="d-flex justify-content-between align-items-center">
                 <h2 className="h5 mb-0">Sessions</h2>
-              {sessions.length > 0 && (
-                <button
-                  className="btn btn-outline-light btn-sm"
-                  onClick={() =>
-                    callApi("/api/auth/sessions/revoke-others", { method: "POST" }).then(fetchSessions)
-                  }
-                >
-                  Revoke other sessions
-                </button>
-              )}
-            </div>
+                {sessions.length > 0 && (
+                  <button
+                    className="btn btn-outline-light btn-sm"
+                    onClick={() =>
+                      callApi("/api/auth/sessions/revoke-others", { method: "POST" }).then(fetchSessions)
+                    }
+                  >
+                    Revoke other sessions
+                  </button>
+                )}
+              </div>
               {sessions.length === 0 ? (
                 <p className="text-secondary small mb-0">No sessions loaded.</p>
               ) : (

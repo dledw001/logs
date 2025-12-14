@@ -1,16 +1,16 @@
 "use client";
 
-import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { callApi } from "../../lib/api";
 
 export default function AccountPage() {
   const router = useRouter();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [status, setStatus] = useState<string | null>(null);
+  const [status, setStatus] = useState(null);
 
-  const submit = async (e: FormEvent) => {
+  const submit = async (e) => {
     e.preventDefault();
     setStatus("Updating password...");
     const res = await callApi("/api/auth/password/change", {
@@ -32,9 +32,7 @@ export default function AccountPage() {
           <div className="card bg-body-tertiary border border-secondary-subtle">
             <div className="card-body">
               <h1 className="h5 mb-3">Manage account</h1>
-              <p className="text-secondary small mb-3">
-                Change your password. This will revoke other sessions.
-              </p>
+              <p className="text-secondary small mb-3">Change your password. This will revoke other sessions.</p>
               <form className="vstack gap-3" onSubmit={submit}>
                 <input
                   className="form-control bg-dark text-light border-secondary"
@@ -56,11 +54,7 @@ export default function AccountPage() {
                   <button className="btn btn-primary" type="submit">
                     Update password
                   </button>
-                  <button
-                    className="btn btn-outline-light"
-                    type="button"
-                    onClick={() => router.push("/home")}
-                  >
+                  <button className="btn btn-outline-light" type="button" onClick={() => router.push("/home")}>
                     Back to home
                   </button>
                 </div>

@@ -1,6 +1,6 @@
-# logs-backend (auth-first starter)
+# Auth-first app starter (backend + frontend)
 
-Opinionated Node/Express auth/ops starter with sessions, CSRF, rate limits, roles, audit logging, OpenAPI docs, and a minimal browser SDK. Includes a Next.js UI shell under `frontend/` for trying the API.
+Opinionated Node/Express auth/ops backend paired with a Next.js UI shell. Includes sessions (HttpOnly cookies), CSRF, rate limits, roles/permissions, audit logging (file + optional DB), health/metrics, OpenAPI docs, a browser SDK, and a Bootstrap-dark frontend with login/register/forgot-password/profile/account flows.
 
 ## Quick start
 ```bash
@@ -10,6 +10,12 @@ cp .env.example .env      # update DATABASE_URL / secrets
 npm install
 npm run migrate:up:dev
 npm start
+
+# in another shell
+cd ../frontend
+cp .env.local.example .env.local   # defaults to backend on http://localhost:4000
+npm install
+npm run dev
 ```
 
 Endpoints:
@@ -29,6 +35,11 @@ From `backend/`:
 From `frontend/` (Next.js):
 - `npm run dev` / `npm run build` / `npm run start`
 - Copy `.env.local.example` to `.env.local` to point the proxy at your backend (defaults to http://localhost:4000).
+
+## Frontend features (Bootstrap dark)
+- Pages: Login, Register, Forgot password, Profile, Manage account (change password), Home dashboard.
+- Navbar adapts to auth state: shows Profile/Manage/Logout when signed in; Login/Register/Forgot when signed out.
+- Calls backend via rewrites so cookies (sid + csrf_token) stay same-site on localhost.
 
 ## Adding a route
 1. Create a file in `src/routes/` (e.g., `hello.js`), export an Express router.
@@ -72,6 +83,7 @@ test("hello returns greeting when authenticated", async () => {
 ```
 
 ## Notes
-- Auth uses HttpOnly cookie sessions (`sid`), CSRF double-submit, rate limits, and audit logging (file + optional DB).
+- Auth uses HttpOnly cookie sessions (`sid`), CSRF double-submit, rate limits, audit logging (file + optional DB), and role/permission helpers.
 - Ops endpoints: `/health`, `/ready`, `/metrics`, `/api/config`, `/api/admin/audit-log` (admin).
 - Browser SDK at `/sdk.js`; see `/sdk-test.html` for a working demo.
+- Frontend is opt-in; you can keep just the backend if embedding into another app.
